@@ -31,7 +31,7 @@ class Ship {
     toString(indent) {
         let ret = indent + "Ship Type      : " + this.shipType + "\n";
         ret += indent + "Position       : (" + this.xPos + ", " + this.yPos + ")\n";
-        ret += indent + "Move Direction : " + this.moveDirection + "\n";
+        ret += indent + "Move Direction : [" + this.moveDirection[0] + ", " + this.moveDirection[1] + "]\n";
         return ret;
     }
 

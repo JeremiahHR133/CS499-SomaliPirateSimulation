@@ -70,14 +70,12 @@ class Simulation {
         this.currentSimTime += this.initialConditions.simTimeStep;
         this.currentFrameNumber += 1;
         // (1)
-        let newFrame = new Frame(this.currentSimTime, frames[this.currentFrameNumber - 1]);
+        let newFrame = new Frame(this.currentSimTime, this.frames[this.currentFrameNumber - 1]);
         // (2)
-        newFrame.addEntity(new CargoShip(0, 50));
-        newFrame.addEntity(new PatrolShip(0, 50));
         // (3)
         newFrame.tick();
         // (4)
-        //newFrame.pruneEntitiesOutsideRange([0, 400], [0, 100]);
+        newFrame.pruneEntitiesOutsideRange([0, 400], [0, 100]);
         // (5)
         this.frames.push(newFrame);
     }

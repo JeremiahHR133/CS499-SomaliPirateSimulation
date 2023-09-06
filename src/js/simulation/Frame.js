@@ -1,12 +1,12 @@
 class Frame {
     // Coppy constructor of sorts
-    constructor(frameTime, frame) {
+    constructor(frameTime, oldFrame) {
         this.frameTime = frameTime;
-        if (frame === undefined) {
+        if (!(oldFrame instanceof Frame)) {
             this.entities = [];
         }
         else {
-            this.entities = frame.cloneEntityList();
+            this.entities = oldFrame.cloneEntityList();
         }
     }
 
@@ -15,6 +15,7 @@ class Frame {
         this.entities.forEach(ent => {
             newEntities.push(ent.clone());
         });
+        return newEntities;
     }
 
     addEntity(ent) {
@@ -22,7 +23,7 @@ class Frame {
     }
 
     pruneEntitiesOutsideRange(xRange, yRange) {
-        this.entities = this.entities.filter((elem) => (elem.xPos < xRange[0] || elem.xPos > xRange[1] || elem.yPos < yRange[0] || elem.yPos > yRange[1]));
+        this.entities = this.entities.filter((elem) => !(elem.xPos < xRange[0] || elem.xPos > xRange[1] || elem.yPos < yRange[0] || elem.yPos > yRange[1]));
     }
 
     toString(indent) {
