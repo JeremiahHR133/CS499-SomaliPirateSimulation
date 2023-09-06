@@ -9,7 +9,7 @@ You have downloaded the complete p5.js library ZIP file, yay!
 * addons folder
   * p5.sound.js
   * p5.sound.min.js
-* empty-example folder
+* empty-example folder (removed from project)
   * index.html
   * p5.js
   * p5.sound.js
