@@ -6,8 +6,9 @@ function setup() {
     createCanvas(screen.width, screen.height/2, document.getElementById("P5-DRAWING-CANVAS"));
     background(color(0, 0, 0));
     simManager = new SimManager();
-    //simManager.simulation.frames[simManager.simulation.currentFrameNumber].addEntity(new PirateShip(40, 50));
-    //simManager.simulation.frames[simManager.simulation.currentFrameNumber].addEntity(new PatrolShip(48, 48));
+    simManager.simulation.frames[simManager.simulation.currentFrameNumber].addEntity(new PirateShip(40, 50));
+    simManager.simulation.frames[simManager.simulation.currentFrameNumber].addEntity(new PatrolShip(48, 48));
+    simManager.simulation.frames[simManager.simulation.currentFrameNumber].addEntity(new CargoShip(40, 50));
 }
 
 function draw() {
@@ -45,11 +46,11 @@ function startSim() {
 }
 
 function pauseSim() {
-    simManager.pauseSim();
+    simManager.pause();
 }
 
 function setSpeedSingle() {
-    simManager.setSpeedSingle();
+    simManager.setSingleStepMode();
 }
 
 function cancelSim() {
