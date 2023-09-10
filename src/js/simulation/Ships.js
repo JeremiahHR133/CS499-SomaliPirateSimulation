@@ -50,13 +50,13 @@ class Ship {
         }
     }
 
-    move(ship) {
-        this.xPos += ship.moveDirection[0];
-        this.yPos += ship.moveDirection[1];
+    move() {
+        this.xPos += this.moveDirection[0];
+        this.yPos += this.moveDirection[1];
     } 
 
     // e.g. If a ship is in the same 4x4 grid but not in the same 3x3 grid, then this function returns true
-    inRangeLooseStrict(otherShip, gridSize) {
+    inRangeStrict(otherShip, gridSize) {
         if (Math.abs(this.xPos - otherShip.xPos) == gridSize) {
             if (Math.abs(this.yPos - otherShip.yPos) <= gridSize) {
                 return true;
@@ -72,9 +72,6 @@ class Ship {
     }
 
     inRangeLoose(otherShip, gridSize) {
-        console.log("thisx: " + this.xPos + ", thisy: " + this.yPos);
-        console.log("otherx: " + otherShip.xPos + ", othery: " + otherShip.yPos);
-        console.log("Grid Size: " + gridSize);
         return (Math.abs(this.xPos - otherShip.xPos) <= gridSize && Math.abs(this.yPos - otherShip.yPos) <= gridSize);
     }
 }
@@ -83,10 +80,6 @@ class CargoShip extends Ship {
     constructor(xPos, yPos, UID) {
         super(ShipTypes.Cargo, xPos, yPos, MoveDirections.East, UID);
         this.evadedPirates = [];
-    }
-
-    move() {
-        super.move(this);
     }
 
     // Will perform an EVADE action if possible
@@ -102,7 +95,7 @@ class CargoShip extends Ship {
             const pirate = frame.pirateList[i];
             
             // We can evade the pirate if all these conditions are met 
-            if (this.inRangeLooseStrict(pirate, 4) && !this.evadedPirates.includes(pirate.UniqueID)) {
+            if (this.inRangeStrict(pirate, 4) && !this.evadedPirates.includes(pirate.UniqueID)) {
                 // From the requirements it looks like we can only evade one pirate in a tick
                 // so we break out of this loop after evading a pirate
                 this.xPos = tempX;
@@ -123,10 +116,6 @@ class CargoShip extends Ship {
 class PatrolShip extends Ship {
     constructor(xPos, yPos, UID) {
         super(ShipTypes.Patrol, xPos, yPos, MoveDirections.West.map(element => element * 2), UID);
-    }
-
-    move() {
-        super.move(this);
     }
 
     // Will perform a DEFEAT action or a RESCUE action if possible
@@ -164,10 +153,6 @@ class PirateShip extends Ship {
         this.hasCapture = false;
     }
 
-    move() {
-        super.move(this);
-    }
-
     // Will perform a CAPTURE if possible
     doAction(frame) {
         // No furthur action if the pirate already has a capture
@@ -177,7 +162,6 @@ class PirateShip extends Ship {
         for (let i = 0; i < frame.cargoList.length; i++) {
             const cargo = frame.cargoList[i];
             if (this.inRangeLoose(cargo, 3)) {
-                console.log("IN range for Pirate and capture");
                 frame.convertCargoToCapture(cargo, this);
                 this.hasCapture = true;
                 this.moveDirection = MoveDirections.South;
@@ -200,11 +184,6 @@ class CaptureShip extends Ship {
     constructor(xPos, yPos, UID, pirateUID) {
         super(ShipTypes.Capture, xPos, yPos, MoveDirections.South, UID);
         this.pirateUID = pirateUID;
-    }
-
-    move() {
-        // Perform generic tick behavior
-        super.move(this);
     }
 
     doAction(frame) {
