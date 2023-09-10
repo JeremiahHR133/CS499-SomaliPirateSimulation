@@ -1,24 +1,57 @@
-let simulation;
+let simManager;
 let frameTime = 0;
 
 function setup() {
     // put setup code here
     createCanvas(screen.width, screen.height/2, document.getElementById("P5-DRAWING-CANVAS"));
     background(color(0, 0, 0));
-    simulation = new Simulation();
-    simulation.frames[simulation.currentFrameNumber].addEntity(new CargoShip(0, 50));
-    //console.log(simulation.initialConditions.getInitCellAtIndex(98, 350).getIndexAsString());
-    simulation.tick();
-    simulation.tick();
-    simulation.tick();
-    simulation.tick();
-    console.log(simulation.toString("   "));
+    simManager = new SimManager();
+    //simManager.simulation.frames[simManager.simulation.currentFrameNumber].addEntity(new PirateShip(40, 50));
+    //simManager.simulation.frames[simManager.simulation.currentFrameNumber].addEntity(new PatrolShip(48, 48));
 }
 
 function draw() {
     // put drawing code here
-    if (performance.now() - frameTime > 1000){
-        frameTime = performance.now();
+    simManager.tick();
+}
 
-    }
+
+// ------------------------
+// HTML interface functions
+// ------------------------
+
+function setSpeed1x() {
+    simManager.setSpeed1x();
+}
+
+function setSpeed2x() {
+    simManager.setSpeed2x();
+}
+
+function setSpeed10x() {
+    simManager.setSpeed10x();
+}
+
+function setSpeed20x() {
+    simManager.setSpeed20x();
+}
+
+function setSpeedBackwards() {
+
+}
+
+function startSim() {
+    simManager.start();
+}
+
+function pauseSim() {
+    simManager.pauseSim();
+}
+
+function setSpeedSingle() {
+    simManager.setSpeedSingle();
+}
+
+function cancelSim() {
+
 }
