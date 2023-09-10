@@ -64,8 +64,7 @@ class Simulation {
     //  (1) Create a new frame from the previous frame (coppy existing entities)
     //  (2) Spawn new entities into the frame (such that after a tick they will "move into the map")
     //  (3) Tick the new frame 
-    //  (4) Remove out of bounds entities
-    //  (5) Save the ticked frame to the frame list
+    //  (4) Save the ticked frame to the frame list
     tick() {
         this.currentSimTime += this.initialConditions.simTimeStep;
         this.currentFrameNumber += 1;
@@ -73,10 +72,8 @@ class Simulation {
         let newFrame = new Frame(this.currentSimTime, this.frames[this.currentFrameNumber - 1]);
         // (2)
         // (3)
-        newFrame.tick();
+        newFrame.tick([0, this.initialConditions.simDimensions[1]], [0, this.initialConditions.simDimensions[0]]);
         // (4)
-        newFrame.pruneEntitiesOutsideRange([0, 400], [0, 100]);
-        // (5)
         this.frames.push(newFrame);
     }
 
