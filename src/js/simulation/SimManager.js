@@ -44,6 +44,7 @@ class SimManager {
 
     start() {
         this.paused = false;
+        this.singleStepMode = false;
     }
 
     pause() {
