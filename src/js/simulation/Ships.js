@@ -17,6 +17,14 @@ const MoveDirections = Object.freeze({
     West:  [-1, 0]
 });
 
+// The default move directions for ships on spawn
+const ShipMoveDirections = Object.freeze({
+    Cargo: MoveDirections.East,
+    Patrol: MoveDirections.West.map(element => element * 2),
+    Pirate: MoveDirections.North,
+    Capture: MoveDirections.South
+});
+
 // Base class for all ship objects
 class Ship {
     constructor(type, xPos, yPos, dir, UID) {
@@ -78,7 +86,7 @@ class Ship {
 
 class CargoShip extends Ship {
     constructor(xPos, yPos, UID) {
-        super(ShipTypes.Cargo, xPos, yPos, MoveDirections.East, UID);
+        super(ShipTypes.Cargo, xPos, yPos, ShipMoveDirections.Cargo, UID);
         this.evadedPirates = [];
     }
 
@@ -115,7 +123,7 @@ class CargoShip extends Ship {
 
 class PatrolShip extends Ship {
     constructor(xPos, yPos, UID) {
-        super(ShipTypes.Patrol, xPos, yPos, MoveDirections.West.map(element => element * 2), UID);
+        super(ShipTypes.Patrol, xPos, yPos, ShipMoveDirections.Patrol, UID);
     }
 
     // Will perform a DEFEAT action or a RESCUE action if possible
@@ -149,7 +157,7 @@ class PatrolShip extends Ship {
 
 class PirateShip extends Ship {
     constructor(xPos, yPos, UID) {
-        super(ShipTypes.Pirate, xPos, yPos, MoveDirections.North, UID);
+        super(ShipTypes.Pirate, xPos, yPos, ShipMoveDirections.Pirate, UID);
         this.hasCapture = false;
     }
 
@@ -182,7 +190,7 @@ class PirateShip extends Ship {
 
 class CaptureShip extends Ship {
     constructor(xPos, yPos, UID, pirateUID) {
-        super(ShipTypes.Capture, xPos, yPos, MoveDirections.South, UID);
+        super(ShipTypes.Capture, xPos, yPos, ShipMoveDirections.Capture, UID);
         this.pirateUID = pirateUID;
     }
 
