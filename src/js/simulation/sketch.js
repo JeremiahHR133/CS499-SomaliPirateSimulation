@@ -1,16 +1,112 @@
 let simManager;
-let frameTime = 0;
+
+// Images
+let bgImage;
+let cargoImage;
+let patrolImage;
+let pirateImage;
+let captureImage;
+
+// Graphics variables
+let scaleFactor = 1;
+let translateX = 0, translateY = 0;
+let worldXRatio, worldYRatio;
+let canvasWidth, canvasHeight;
+
+function preload() {
+    bgImage = loadImage("images/gulfofaden.png");
+    cargoImage = loadImage("images/cargo.png");
+    patrolImage = loadImage("images/warship2.png");
+    pirateImage = loadImage("images/pirate.png");
+    captureImage = loadImage("images/capture.png");
+}
 
 function setup() {
     // put setup code here
-    createCanvas(screen.width, screen.height/2, document.getElementById("P5-DRAWING-CANVAS"));
-    background(color(0, 0, 0));
+    canvasWidth = screen.width;
+    canvasHeight = screen.width / 4;
+
+    createCanvas(canvasWidth, canvasHeight, document.getElementById("P5-DRAWING-CANVAS"));
+    background(0, 0, 0);
+
     simManager = new SimManager();
+
+    worldXRatio = canvasWidth / simManager.simulation.initialConditions.simDimensions[1];
+    worldYRatio = canvasHeight / simManager.simulation.initialConditions.simDimensions[0];
 }
 
 function draw() {
-    // put drawing code here
     simManager.tick();
+
+    // Manage zooming relative to the mouse and panning
+    lockToViewport();
+    translate(translateX, translateY);
+    scale(scaleFactor);
+
+    // Draw the map
+    imageMode(CORNER);
+    image(bgImage, 0, 0, canvasWidth, canvasHeight);
+
+    // Draw the grid
+    // Draw the horizontal lines
+    stroke(0, 0, 0);
+    for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i++) {
+        line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
+    }
+    // Draw vertical lines
+    for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; i++) {
+        line(i * worldXRatio, 0, i * worldXRatio, simManager.simulation.initialConditions.simDimensions[0] * worldYRatio);
+    }
+
+    // Draw all the entities
+    imageMode(CENTER);
+    let frame = simManager.simulation.getCurrentFrame();
+    frame.cargoList.forEach(cargo => {
+        image(cargoImage, cargo.xPos * worldXRatio, cargo.yPos * worldYRatio, 30, 30);
+    });
+    frame.patrolList.forEach(patrol => {
+        image(patrolImage, patrol.xPos * worldXRatio, patrol.yPos * worldYRatio, 30, 30);
+    });
+    frame.pirateList.forEach(pirate => {
+        image(pirateImage, pirate.xPos * worldXRatio, pirate.yPos * worldYRatio, 30, 30);
+    });
+    frame.captureList.forEach(capture => {
+        image(captureImage, capture.xPos * worldXRatio, capture.yPos * worldYRatio, 30, 30);
+    });
+}
+
+function lockToViewport() {
+    if (translateX > 0) {
+        translateX = 0;
+    }
+    if (translateY > 0) {
+        translateY = 0;
+    }
+    if (translateX < canvasWidth * (1 - scaleFactor)) {
+        translateX = canvasWidth * (1 - scaleFactor);
+    }
+    if (translateY < canvasHeight * (1 - scaleFactor)) {
+        translateY = canvasHeight * (1 - scaleFactor);
+    }
+}
+
+function mouseWheel(event) {
+    let s = event.delta > 0 ? 0.95 : 1.05;
+
+    scaleFactor *= s;
+
+    if (scaleFactor < 1) {
+        scaleFactor = 1;
+        return;
+    }
+
+    translateX = mouseX - s * mouseX + s * translateX;
+    translateY = mouseY - s * mouseY + s * translateY;
+}
+
+function mouseDragged() {
+    translateX += movedX;
+    translateY += movedY;
 }
 
 

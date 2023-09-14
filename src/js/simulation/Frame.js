@@ -34,6 +34,7 @@ class Frame {
     }
 
     convertCaptureToCargo(capture) {
+        this.removeEntity(capture.pirateUID);
         this.removeEntity(capture);
         this.addEntity(new CargoShip(capture.xPos, capture.yPos, capture.UniqueID));
     }

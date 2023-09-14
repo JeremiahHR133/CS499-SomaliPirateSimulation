@@ -81,6 +81,10 @@ class Simulation {
         this.frames.push(newFrame);
     }
 
+    getCurrentFrame() {
+        return this.frames[this.currentFrameNumber];
+    }
+
     toString() {
         let ret = "=== Sim Data (without initial cond. cells) ===\n";
         ret += "\t" + "Current Sim Time    : " + this.currentSimTime + " minutes \n";
