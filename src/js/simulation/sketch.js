@@ -24,9 +24,6 @@ function setup() {
     createCanvas(screen.width, screen.width / 3, document.getElementById("P5-DRAWING-CANVAS"));
     background(0, 0, 0);
     simManager = new SimManager();
-    simManager.simulation.frames[simManager.simulation.currentFrameNumber].addEntity(new PirateShip(40, 50));
-    simManager.simulation.frames[simManager.simulation.currentFrameNumber].addEntity(new PatrolShip(48, 48));
-    simManager.simulation.frames[simManager.simulation.currentFrameNumber].addEntity(new CargoShip(40, 50));
 }
 
 function draw() {

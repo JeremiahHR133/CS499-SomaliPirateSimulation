@@ -1,30 +1,11 @@
 // Version of a cell that only contains the probability data.
 // Since this data is constant after sim start it goes under the init category
-class InitSimCell {
-    constructor(row, col) {
-        this.row = row;
-        this.col = col;
+class ProbabilityCell {
+    constructor(index, prob) {
+        this.index = index;
+        this.probability = prob;
 
-        // Individual probabilities for each ship type to spawn in the day
-        this.probDayCargoSpawn;
-        this.probDayCargoSpawnSetByUser = false;
-        this.probDayPatrolSpawn;
-        this.probDayPatrolSpawnSetByUser = false;
-        this.probDayPirateSpawn;
-        this.probDayPirateSpawnSetByUser = false;
-
-        // Individual probabilities for each ship type to spawn at night, are the same by default
-        this.probNightCargoSpawn;
-        this.probNightCargoSpawnSetByUser = false;
-        this.probNightPatrolSpawn;
-        this.probNightPatrolSpawnSetByUser = false;
-        this.probNightPirateSpawn;
-        this.probNightPirateSpawnSetByUser = false;
-    }
-
-    // For Debugging
-    getIndexAsString() {
-        return "Row: " + this.row + ", Col: " + this.col;
+        this.modifiedByUser = false;
     }
 }
 
@@ -36,16 +17,30 @@ class InitSimData {
         this.simTimeStep = 5;      // Specified in minutes
         this.simDimensions = [100, 400]; // 100 rows by 400 columns 
         this.considerDayNight = false; // Specifies if individual day / night settings should be used
-        this.cells = [];
 
-        // Initialize the cell array
-        for (let i = 0; i < this.simDimensions[0] * this.simDimensions[1]; i++) {
-            this.cells.push(new InitSimCell(Math.floor(i / this.simDimensions[1]), i % this.simDimensions[1]));
+        // Default probabilities for spawn
+        this.cargoSpawn = 0.5;
+        this.patrolSpawn = 0.25;
+        this.pirateSpawn = 0.4;
+
+        // Probability lists
+        this.cargoProbs = [];
+        this.patrolProbs = [];
+        this.pirateProbs = [];
+
+        // Initializing probabilities with all cells equaly likely
+        // Cargos enter from the left
+        for (let i = 0; i < this.simDimensions[0]; i++) {
+            this.cargoProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[0]))
         }
-    }
-
-    getInitCellAtIndex(row, col) {
-        return this.cells[(row * this.simDimensions[1]) + (col)];
+        // Patrols enter from the right
+        for (let i = 0; i < this.simDimensions[0]; i++) {
+            this.patrolProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[0]))
+        }
+        // Pirates enter from the bottom
+        for (let i = 0; i < this.simDimensions[1]; i++) {
+            this.pirateProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[1]))
+        }
     }
 
     toString(indent) {
@@ -77,6 +72,9 @@ class Simulation {
         // (1)
         let newFrame = new Frame(this.currentSimTime, this.frames[this.currentFrameNumber - 1]);
         // (2)
+        this.trySpawnEntity(newFrame, "Cargo", this.initialConditions.cargoSpawn, this.initialConditions.cargoProbs);
+        this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.patrolSpawn, this.initialConditions.patrolProbs);
+        this.trySpawnEntity(newFrame, "Pirate", this.initialConditions.pirateSpawn, this.initialConditions.pirateProbs);
         // (3)
         newFrame.tick([0, this.initialConditions.simDimensions[1]], [0, this.initialConditions.simDimensions[0]]);
         // (4)
@@ -95,5 +93,30 @@ class Simulation {
             ret += "\n";
         });
         return ret;
+    }
+
+    trySpawnEntity(frame, shipType, spawnProb, cellList) {
+        if (Math.random() < spawnProb) {
+            let rand = Math.random();
+            let sum = 0;
+            let index = 0;
+            for (let i = 0; i < cellList.length; i++) {
+                const cell = cellList[i];
+                if (cell.probability + sum >= rand) {
+                    if (shipType == "Cargo") {
+                        frame.addEntity(new CargoShip(0 - ShipMoveDirections.Cargo[0], index));
+                    }
+                    else if (shipType == "Patrol") {
+                        frame.addEntity(new PatrolShip(this.initialConditions.simDimensions[1] - ShipMoveDirections.Patrol[0], index));
+                    }
+                    else if (shipType == "Pirate") {
+                        frame.addEntity(new PirateShip(index, this.initialConditions.simDimensions[0] - ShipMoveDirections.Pirate[1]));
+                    }
+                    return;
+                }
+                sum += cell.probability;
+                index += 1;
+            }
+        }
     }
 }
