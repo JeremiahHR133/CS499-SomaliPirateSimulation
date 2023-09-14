@@ -7,13 +7,19 @@ class InitSimCell {
 
         // Individual probabilities for each ship type to spawn in the day
         this.probDayCargoSpawn;
+        this.probDayCargoSpawnSetByUser = false;
         this.probDayPatrolSpawn;
+        this.probDayPatrolSpawnSetByUser = false;
         this.probDayPirateSpawn;
+        this.probDayPirateSpawnSetByUser = false;
 
         // Individual probabilities for each ship type to spawn at night, are the same by default
         this.probNightCargoSpawn;
+        this.probNightCargoSpawnSetByUser = false;
         this.probNightPatrolSpawn;
+        this.probNightPatrolSpawnSetByUser = false;
         this.probNightPirateSpawn;
+        this.probNightPirateSpawnSetByUser = false;
     }
 
     // For Debugging
