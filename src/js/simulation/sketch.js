@@ -11,6 +11,7 @@ let captureImage;
 let scaleFactor = 1;
 let translateX = 0, translateY = 0;
 let worldXRatio, worldYRatio;
+let canvasWidth, canvasHeight;
 
 function preload() {
     bgImage = loadImage("images/gulfofaden.png");
@@ -22,11 +23,16 @@ function preload() {
 
 function setup() {
     // put setup code here
-    createCanvas(screen.width, screen.width / 3, document.getElementById("P5-DRAWING-CANVAS"));
+    canvasWidth = screen.width;
+    canvasHeight = screen.width / 4;
+
+    createCanvas(canvasWidth, canvasHeight, document.getElementById("P5-DRAWING-CANVAS"));
     background(0, 0, 0);
+
     simManager = new SimManager();
-    worldXRatio = screen.width / simManager.simulation.initialConditions.simDimensions[1];
-    worldYRatio = (screen.width / 3) / simManager.simulation.initialConditions.simDimensions[0];
+
+    worldXRatio = canvasWidth / simManager.simulation.initialConditions.simDimensions[1];
+    worldYRatio = canvasHeight / simManager.simulation.initialConditions.simDimensions[0];
 }
 
 function draw() {
@@ -39,7 +45,18 @@ function draw() {
 
     // Draw the map
     imageMode(CORNER);
-    image(bgImage, 0, 0, screen.width, screen.width / 3);
+    image(bgImage, 0, 0, canvasWidth, canvasHeight);
+
+    // Draw the grid
+    // Draw the horizontal lines
+    stroke(0, 0, 0);
+    for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i++) {
+        line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
+    }
+    // Draw vertical lines
+    for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; i++) {
+        line(i * worldXRatio, 0, i * worldXRatio, simManager.simulation.initialConditions.simDimensions[0] * worldYRatio);
+    }
 
     // Draw all the entities
     imageMode(CENTER);
@@ -65,11 +82,11 @@ function lockToViewport() {
     if (translateY > 0) {
         translateY = 0;
     }
-    if (translateX < screen.width * (1 - scaleFactor)) {
-        translateX = screen.width * (1 - scaleFactor);
+    if (translateX < canvasWidth * (1 - scaleFactor)) {
+        translateX = canvasWidth * (1 - scaleFactor);
     }
-    if (translateY < (screen.width / 3) * (1 - scaleFactor)) {
-        translateY = (screen.width / 3) * (1 - scaleFactor);
+    if (translateY < canvasHeight * (1 - scaleFactor)) {
+        translateY = canvasHeight * (1 - scaleFactor);
     }
 }
 
