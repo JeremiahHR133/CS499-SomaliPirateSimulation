@@ -15,9 +15,9 @@ class SimManager {
         }
         
         let currentTime = performance.now();
-        if (currentTime - this.prevTime >= this.frametime) {
+        if (currentTime - this.prevTime >= this.frametime || this.singleStepMode) {
             this.simulation.tick();
-            console.log(this.simulation.toString("   "));
+            //console.log(this.simulation.toString("   "));
             this.prevTime = performance.now();
         }
 

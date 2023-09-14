@@ -17,6 +17,15 @@ const MoveDirections = Object.freeze({
     West:  [-1, 0]
 });
 
+function cloneMoveDirection(mvDir) {
+    let ret = [];
+    for (let i = 0; i < mvDir.length; i++) {
+        const val = mvDir[i];
+        ret.push(val);
+    }
+    return ret;
+}
+
 // The default move directions for ships on spawn
 const ShipMoveDirections = Object.freeze({
     Cargo: MoveDirections.East,
@@ -102,12 +111,19 @@ class CargoShip extends Ship {
         for (let i = 0; i < frame.pirateList.length; i++) {
             const pirate = frame.pirateList[i];
             
-            // We can evade the pirate if all these conditions are met 
-            if (this.inRangeStrict(pirate, 4) && !this.evadedPirates.includes(pirate.UniqueID)) {
+            // We cannot evade a pirate twice
+            for (let i = 0; i < this.evadedPirates.length; i++) {
+                const UID = this.evadedPirates[i];
+                if (pirate.UniqueID == UID) {
+                    return;
+                }
+            }
+            if (this.inRangeStrict(pirate, 4)) {
                 // From the requirements it looks like we can only evade one pirate in a tick
                 // so we break out of this loop after evading a pirate
                 this.xPos = tempX;
                 this.yPos = tempY;
+                this.evadedPirates.push(pirate.UniqueID);
                 break;
             }
         }
@@ -116,7 +132,17 @@ class CargoShip extends Ship {
     // NOTE that clone() preserves the UID, so do not use it to create new entities,
     // rather it is meant to clone the entities between the frames
     clone() {
-        return new CargoShip(this.xPos, this.yPos, this.UniqueID);
+        let nShip = new CargoShip(this.xPos, this.yPos, this.UniqueID);
+        for (let i = 0; i < this.evadedPirates.length; i++) {
+            const num = this.evadedPirates[i];
+            nShip.evadedPirates.push(num);
+        }
+        nShip.moveDirection = [];
+        for (let i = 0; i < this.moveDirection.length; i++) {
+            const num = this.moveDirection[i];
+            nShip.moveDirection.push(num);
+        }
+        return nShip;
     }
 }
 
@@ -151,7 +177,13 @@ class PatrolShip extends Ship {
     // NOTE that clone() preserves the UID, so do not use it to create new entities,
     // rather it is meant to clone the entities between the frames
     clone() {
-        return new PatrolShip(this.xPos, this.yPos, this.UniqueID);
+        let nShip = new PatrolShip(this.xPos, this.yPos, this.UniqueID);
+        nShip.moveDirection = [];
+        for (let i = 0; i < this.moveDirection.length; i++) {
+            const num = this.moveDirection[i];
+            nShip.moveDirection.push(num);
+        }
+        return nShip;
     }
 }
 
@@ -172,7 +204,7 @@ class PirateShip extends Ship {
             if (this.inRangeLoose(cargo, 3)) {
                 frame.convertCargoToCapture(cargo, this);
                 this.hasCapture = true;
-                this.moveDirection = MoveDirections.South;
+                this.moveDirection = ShipMoveDirections.Capture;
                 this.xPos = cargo.xPos;
                 this.yPos = cargo.yPos;
                 // We can only capture one cargo per pirate, so if we find one, we are done
@@ -184,7 +216,14 @@ class PirateShip extends Ship {
     // NOTE that clone() preserves the UID, so do not use it to create new entities,
     // rather it is meant to clone the entities between the frames
     clone() {
-        return new PirateShip(this.xPos, this.yPos, this.UniqueID);
+        let nShip = new PirateShip(this.xPos, this.yPos, this.UniqueID);
+        nShip.hasCapture = this.hasCapture;
+        nShip.moveDirection = [];
+        for (let i = 0; i < this.moveDirection.length; i++) {
+            const num = this.moveDirection[i];
+            nShip.moveDirection.push(num);
+        }
+        return nShip;
     }
 }
 
@@ -201,6 +240,12 @@ class CaptureShip extends Ship {
     // NOTE that clone() preserves the UID, so do not use it to create new entities,
     // rather it is meant to clone the entities between the frames
     clone() {
-        return new CaptureShip(this.xPos, this.yPos, this.UniqueID);
+        let nShip = new CaptureShip(this.xPos, this.yPos, this.UniqueID, this.pirateUID);
+        nShip.moveDirection = [];
+        for (let i = 0; i < this.moveDirection.length; i++) {
+            const num = this.moveDirection[i];
+            nShip.moveDirection.push(num);
+        }
+        return nShip;
     }
 }

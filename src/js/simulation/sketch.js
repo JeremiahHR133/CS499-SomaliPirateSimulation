@@ -10,6 +10,7 @@ let captureImage;
 // Graphics variables
 let scaleFactor = 1;
 let translateX = 0, translateY = 0;
+let worldXRatio, worldYRatio;
 
 function preload() {
     bgImage = loadImage("images/gulfofaden.png");
@@ -24,21 +25,37 @@ function setup() {
     createCanvas(screen.width, screen.width / 3, document.getElementById("P5-DRAWING-CANVAS"));
     background(0, 0, 0);
     simManager = new SimManager();
+    worldXRatio = screen.width / simManager.simulation.initialConditions.simDimensions[1];
+    worldYRatio = (screen.width / 3) / simManager.simulation.initialConditions.simDimensions[0];
 }
 
 function draw() {
     simManager.tick();
-    // put drawing code here
-    background(0, 0, 0);
-
-    lockToViewport();
 
     // Manage zooming relative to the mouse and panning
+    lockToViewport();
     translate(translateX, translateY);
     scale(scaleFactor);
 
+    // Draw the map
+    imageMode(CORNER);
     image(bgImage, 0, 0, screen.width, screen.width / 3);
 
+    // Draw all the entities
+    imageMode(CENTER);
+    let frame = simManager.simulation.getCurrentFrame();
+    frame.cargoList.forEach(cargo => {
+        image(cargoImage, cargo.xPos * worldXRatio, cargo.yPos * worldYRatio, 30, 30);
+    });
+    frame.patrolList.forEach(patrol => {
+        image(patrolImage, patrol.xPos * worldXRatio, patrol.yPos * worldYRatio, 30, 30);
+    });
+    frame.pirateList.forEach(pirate => {
+        image(pirateImage, pirate.xPos * worldXRatio, pirate.yPos * worldYRatio, 30, 30);
+    });
+    frame.captureList.forEach(capture => {
+        image(captureImage, capture.xPos * worldXRatio, capture.yPos * worldYRatio, 30, 30);
+    });
 }
 
 function lockToViewport() {
