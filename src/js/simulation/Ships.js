@@ -72,6 +72,10 @@ class Ship {
         this.yPos += this.moveDirection[1];
     } 
 
+    inMapRange(xRange, yRange) {
+        return !(this.xPos < xRange[0] || this.xPos > xRange[1] || this.yPos < yRange[0] || this.yPos > yRange[1]);
+    }
+
     // e.g. If a ship is in the same 4x4 grid but not in the same 3x3 grid, then this function returns true
     inRangeStrict(otherShip, gridSize) {
         if (Math.abs(this.xPos - otherShip.xPos) == gridSize) {
@@ -100,7 +104,7 @@ class CargoShip extends Ship {
     }
 
     // Will perform an EVADE action if possible
-    doAction(frame, xBounds, yBounds) {
+    doAction(frame, xBounds, yBounds, simStats) {
         let tempX = this.xPos + MoveDirections.North[0];
         let tempY = this.yPos + MoveDirections.North[1];
         if (tempX < xBounds[0] || tempX > xBounds[1] || tempY < yBounds[0] || tempY > yBounds[1]) {
@@ -153,23 +157,26 @@ class PatrolShip extends Ship {
     }
 
     // Will perform a DEFEAT action or a RESCUE action if possible
-    doAction(frame) {
+    doAction(frame, simStats) {
         // Rescue
+        // Currently implemented so a patrol can rescue any number of captures in its radius
         for (let i = 0; i < frame.captureList.length; i++) {
             const capture = frame.captureList[i];
             if (this.inRangeLoose(capture, 3)) {
                 frame.removeEntity(capture.pirateUID);
                 frame.convertCaptureToCargo(capture);
-                // This means that a pirate can both rescue and defeat pirates in a single tick
-                break;
+                simStats.piratesDefeated += 1;
+                simStats.capturesRescued += 1;
             }
         }
         
         // Defeat
+        // Currently implemented to defeat any number of pirates in the radius
         for (let i = 0; i < frame.pirateList.length; i++) {
             const pirate = frame.pirateList[i];
             if (this.inRangeLoose(pirate, 3)) {
                 frame.removeEntity(pirate);
+                simStats.piratesDefeated += 1;
             }
         }
     }
@@ -194,7 +201,7 @@ class PirateShip extends Ship {
     }
 
     // Will perform a CAPTURE if possible
-    doAction(frame) {
+    doAction(frame, simStats) {
         // No furthur action if the pirate already has a capture
         if (this.hasCapture) {
             return;
@@ -202,11 +209,16 @@ class PirateShip extends Ship {
         for (let i = 0; i < frame.cargoList.length; i++) {
             const cargo = frame.cargoList[i];
             if (this.inRangeLoose(cargo, 3)) {
+                // If the cargo is getting captured then they evaded all the pirates
+                // in their evadedList successfully except the one capturing them now
+                simStats.evadesNotCaptured += cargo.evadedPirates.length - (cargo.evadedPirates.includes(this.UniqueID) ? 1 : 0);
+                simStats.evadesCaptured += (cargo.evadedPirates.includes(this.UniqueID) ? 1 : 0);
                 frame.convertCargoToCapture(cargo, this);
                 this.hasCapture = true;
                 this.moveDirection = ShipMoveDirections.Capture;
                 this.xPos = cargo.xPos;
                 this.yPos = cargo.yPos;
+                simStats.cargosCaptured += 1;
                 // We can only capture one cargo per pirate, so if we find one, we are done
                 return;
             }
@@ -233,7 +245,7 @@ class CaptureShip extends Ship {
         this.pirateUID = pirateUID;
     }
 
-    doAction(frame) {
+    doAction(frame, simStats) {
         // Captures have no actions they can do
     }
 

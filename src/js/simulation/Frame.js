@@ -60,10 +60,33 @@ class Frame {
     }
 
     pruneEntitiesOutsideRange(xRange, yRange) {
-        this.cargoList = this.cargoList.filter((elem) => !(elem.xPos < xRange[0] || elem.xPos > xRange[1] || elem.yPos < yRange[0] || elem.yPos > yRange[1]));
-        this.patrolList = this.patrolList.filter((elem) => !(elem.xPos < xRange[0] || elem.xPos > xRange[1] || elem.yPos < yRange[0] || elem.yPos > yRange[1]));
-        this.pirateList = this.pirateList.filter((elem) => !(elem.xPos < xRange[0] || elem.xPos > xRange[1] || elem.yPos < yRange[0] || elem.yPos > yRange[1]));
-        this.captureList = this.captureList.filter((elem) => !(elem.xPos < xRange[0] || elem.xPos > xRange[1] || elem.yPos < yRange[0] || elem.yPos > yRange[1]));
+        this.cargoList = this.cargoList.filter((elem) => elem.inMapRange(xRange, yRange));
+        this.patrolList = this.patrolList.filter((elem) => elem.inMapRange(xRange, yRange));
+        this.pirateList = this.pirateList.filter((elem) => elem.inMapRange(xRange, yRange));
+        this.captureList = this.captureList.filter((elem) => elem.inMapRange(xRange, yRange));
+    }
+
+    recordExitStatistics(simStatsData, xRange, yRange) {
+        this.cargoList.forEach(cargo => {
+            if (!cargo.inMapRange(xRange, yRange)) {
+                simStatsData.cargosExited += 1;
+            }
+        });
+        this.patrolList.forEach(patrol => {
+            if (!patrol.inMapRange(xRange, yRange)) {
+                simStatsData.patrolsExited += 1;
+            }
+        });
+        this.pirateList.forEach(pirate => {
+            if (!pirate.inMapRange(xRange, yRange)) {
+                simStatsData.piratesExited += 1;
+            }
+        });
+        this.captureList.forEach(capture => {
+            if (!capture.inMapRange(xRange, yRange)) {
+                simStatsData.capturesExited += 1;
+            }
+        });
     }
 
     toString(indent) {
@@ -91,7 +114,7 @@ class Frame {
         return ret;
     }
 
-    tick(xBounds, yBounds) {
+    tick(simStats, xBounds, yBounds) {
         // Move all entities
         this.cargoList.forEach(element => {
             element.move();
@@ -106,21 +129,22 @@ class Frame {
             element.move();
         });
 
+        this.recordExitStatistics(simStats, xBounds, yBounds);
         // Remove the ones that 'exited' the simulation
         this.pruneEntitiesOutsideRange(xBounds, yBounds);
 
         // Perform all entities actions
-        this.cargoList.forEach(element => {
-            element.doAction(this, xBounds, yBounds);
-        });
         this.patrolList.forEach(element => {
-            element.doAction(this);
+            element.doAction(this, simStats);
         });
         this.pirateList.forEach(element => {
-            element.doAction(this);
+            element.doAction(this, simStats);
+        });
+        this.cargoList.forEach(element => {
+            element.doAction(this, xBounds, yBounds, simStats);
         });
         this.captureList.forEach(element => {
-            element.doAction(this);
+            element.doAction(this, simStats);
         });
     }
 }
