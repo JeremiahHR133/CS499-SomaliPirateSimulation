@@ -23,6 +23,44 @@
         <button id="b_twentyTimes" onclick="setSpeed20x()">20 Times</button>
     </div>
 
+    <div id="counts">
+        Counts
+        <div>Cargos Entered: <div id="cargosEntered">0</div></div>
+        <div>Cargos Exited: <div id="cargosExited">0</div></div>
+        <div>Patrols Entered: <div id="patrolsEntered">0</div></div>
+        <div>Patrols Exited: <div id="patrolsExited">0</div></div>
+        <div>Pirates Entered: <div id="piratesEntered">0</div></div>
+        <div>Pirates Exited: <div id="piratesExited">0</div></div>
+        <div>Captures Exited: <div id="capturesExited">0</div></div>
+        <div>Pirates Defeated: <div id="piratesDefeated">0</div></div>
+        <div>Cargos Captured: <div id="cargosCaptured">0</div></div>
+        <div>Captures Resuced: <div id="capturesRescued">0</div></div>
+        <div>Evades Not Captured: <div id="evadesNotCaptured">0</div></div>
+        <div>Evades Captured: <div id="evadesCaptured">0</div></div>
+    </div>
+
+    <div id="Normalsettings">
+        Settings
+        <div>Cargo Spawn Rate: <textarea name="cargo" id="cargoSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Patrol Spawn Rate: <textarea name="patrol" id="patrolSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Pirate Spawn Rate: <textarea name="pirate" id="pirateSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div><br>
+        <div><input type="checkbox">Day/Night Toggle</div><br>
+    </div>
+
+    <div id="daySettings">
+        Day                   
+        <div id="cargoSpawnRateDay">Cargo Spawn Rate: <textarea name="cargoDay" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div id="patrolSpawnRateDay">Patrol Spawn Rate: <textarea name="patrolDay" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div id="pirateSpawnRateDay">Pirate Spawn Rate: <textarea name="pirateDay" cols="10" rows="1" style="resize:none"></textarea></div>
+    </div>
+
+    <div id="nightSettings">
+        Night
+        <div id="cargoSpawnRateNight">Cargo Spawn Rate: <textarea name="cargoNight" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div id="patrolSpawnRateNight">Patrol Spawn Rate: <textarea name="patrolNight" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div id="pirateSpawnRateNight">Pirate Spawn Rate: <textarea name="pirateNight" cols="10" rows="1" style="resize:none"></textarea></div>
+    </div>
+
     <!-- All js scripts go here at the bottom of the <body> block-->
     <script src="/src/js/libraries/p5/lib/p5.js"></script>
     <script src="/src/js/simulation/UIDManager.js"></script>

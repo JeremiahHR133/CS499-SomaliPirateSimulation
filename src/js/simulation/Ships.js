@@ -122,7 +122,7 @@ class CargoShip extends Ship {
                     return;
                 }
             }
-            if (this.inRangeStrict(pirate, 4)) {
+            if (this.inRangeStrict(pirate, 4) && !pirate.hasCapture) {
                 // From the requirements it looks like we can only evade one pirate in a tick
                 // so we break out of this loop after evading a pirate
                 this.xPos = tempX;
