@@ -1,3 +1,4 @@
+// Simulation object instance
 let simManager;
 
 // Images
@@ -12,6 +13,7 @@ let scaleFactor = 1;
 let translateX = 0, translateY = 0;
 let worldXRatio, worldYRatio;
 let canvasWidth, canvasHeight;
+let defaultImageSize = 40;
 
 function preload() {
     bgImage = loadImage("images/gulfofaden.png");
@@ -50,11 +52,11 @@ function draw() {
     // Draw the grid
     // Draw the horizontal lines
     stroke(0, 0, 0);
-    for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i++) {
+    for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; scaleFactor > 3.5 ? i += 1 : i += 4) {
         line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
     }
     // Draw vertical lines
-    for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; i++) {
+    for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; scaleFactor > 3.5 ? i += 1 : i += 4) {
         line(i * worldXRatio, 0, i * worldXRatio, simManager.simulation.initialConditions.simDimensions[0] * worldYRatio);
     }
 
@@ -62,16 +64,28 @@ function draw() {
     imageMode(CENTER);
     let frame = simManager.simulation.getCurrentFrame();
     frame.cargoList.forEach(cargo => {
-        image(cargoImage, cargo.xPos * worldXRatio, cargo.yPos * worldYRatio, 30, 30);
+        image(cargoImage,
+            cargo.xPos * worldXRatio + (worldXRatio / 2),
+            cargo.yPos * worldYRatio + (worldYRatio / 2), 
+            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
     });
     frame.patrolList.forEach(patrol => {
-        image(patrolImage, patrol.xPos * worldXRatio, patrol.yPos * worldYRatio, 30, 30);
+        image(patrolImage,
+            patrol.xPos * worldXRatio + (worldXRatio / 2),
+            patrol.yPos * worldYRatio + (worldYRatio / 2),
+            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
     });
     frame.pirateList.forEach(pirate => {
-        image(pirateImage, pirate.xPos * worldXRatio, pirate.yPos * worldYRatio, 30, 30);
+        image(pirateImage,
+            pirate.xPos * worldXRatio + (worldXRatio / 2),
+            pirate.yPos * worldYRatio + (worldYRatio / 2),
+            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
     });
     frame.captureList.forEach(capture => {
-        image(captureImage, capture.xPos * worldXRatio, capture.yPos * worldYRatio, 30, 30);
+        image(captureImage,
+            capture.xPos * worldXRatio + (worldXRatio / 2),
+            capture.yPos * worldYRatio + (worldYRatio / 2),
+            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
     });
 }
 
@@ -107,6 +121,12 @@ function mouseWheel(event) {
 function mouseDragged() {
     translateX += movedX;
     translateY += movedY;
+}
+
+function mouseClicked() {
+    if (mouseButton === LEFT) {
+        
+    }
 }
 
 
