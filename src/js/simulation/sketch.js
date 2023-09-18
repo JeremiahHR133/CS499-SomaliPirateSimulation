@@ -15,6 +15,7 @@ let worldXRatio, worldYRatio;
 let canvasWidth, canvasHeight;
 let mouseOnCanvas = false;
 let defaultImageSize = 40;
+let scaleToShowGrid = 3.5;
 
 function preload() {
     bgImage = loadImage("images/gulfofaden.png");
@@ -50,17 +51,12 @@ function draw() {
     imageMode(CORNER);
     image(bgImage, 0, 0, canvasWidth, canvasHeight);
 
-    // Draw the grid
-    // Draw the horizontal lines
-    stroke(0, 0, 0);
-    for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; scaleFactor > 3.5 ? i += 1 : i += 4) {
-        line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
-    }
-    // Draw vertical lines
-    for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; scaleFactor > 3.5 ? i += 1 : i += 4) {
-        line(i * worldXRatio, 0, i * worldXRatio, simManager.simulation.initialConditions.simDimensions[0] * worldYRatio);
-    }
+    drawGridLines();
 
+    drawBoatSprites();
+}
+
+function drawBoatSprites() {
     // Draw all the entities
     imageMode(CENTER);
     let frame = simManager.simulation.getCurrentFrame();
@@ -88,6 +84,46 @@ function draw() {
             capture.yPos * worldYRatio + (worldYRatio / 2),
             defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
     });
+}
+
+function drawGridLines() {
+    stroke(0, 0, 0);
+    if (scaleFactor > scaleToShowGrid) {
+        strokeWeight(0.4);
+        // Draw the grid
+        // Draw the horizontal lines
+        for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i += 1) {
+            if (i % 4 == 0) {
+                strokeWeight(1);
+            }
+            else {
+                strokeWeight(0.4);
+            }
+            line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
+        }
+        // Draw vertical lines
+        for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; i += 1) {
+            if (i % 4 == 0) {
+                strokeWeight(1);
+            }
+            else {
+                strokeWeight(0.4);
+            }
+            line(i * worldXRatio, 0, i * worldXRatio, simManager.simulation.initialConditions.simDimensions[0] * worldYRatio);
+        }
+    }
+    else {
+        strokeWeight(1);
+        // Draw the grid
+        // Draw the horizontal lines
+        for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i += 4) {
+            line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
+        }
+        // Draw vertical lines
+        for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; i += 4) {
+            line(i * worldXRatio, 0, i * worldXRatio, simManager.simulation.initialConditions.simDimensions[0] * worldYRatio);
+        }
+    }
 }
 
 function lockToViewport() {
@@ -142,7 +178,12 @@ function mouseDragged() {
 
 function mouseClicked() {
     if (mouseButton === LEFT) {
-        
+        // If the mouse was clicked on the canvas and we are seeing the full grid resolution
+        // then we can determine which cell was clicked on by reversing the math done to draw the cell
+        if (mouseOnCanvas && scaleFactor > scaleToShowGrid) {
+            console.log(Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor));
+            console.log(Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor));
+        }
     }
 }
 
