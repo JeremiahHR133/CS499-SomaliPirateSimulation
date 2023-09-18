@@ -14,7 +14,7 @@ let translateX = 0, translateY = 0;
 let worldXRatio, worldYRatio;
 let canvasWidth, canvasHeight;
 let mouseOnCanvas = false;
-let defaultImageSize = 40;
+let defaultImageSize;
 let scaleToShowGrid = 3.5;
 
 function preload() {
@@ -29,6 +29,9 @@ function setup() {
     // put setup code here
     canvasWidth = screen.width;
     canvasHeight = screen.width / 4;
+
+    // Meant to have 40 pixels on a 1920 x 1080 screen
+    defaultImageSize = 40 * (screen.width / 1920);
 
     createCanvas(canvasWidth, canvasHeight, document.getElementById("P5-DRAWING-CANVAS"));
     background(0, 0, 0);
