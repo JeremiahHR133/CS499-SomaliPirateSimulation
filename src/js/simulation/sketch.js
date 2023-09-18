@@ -10,6 +10,7 @@ let captureImage;
 
 // Graphics variables
 let scaleFactor = 1;
+let imageScaleFactor = scaleFactor;
 let translateX = 0, translateY = 0;
 let worldXRatio, worldYRatio;
 let canvasWidth, canvasHeight;
@@ -67,25 +68,25 @@ function drawBoatSprites() {
         image(cargoImage,
             cargo.xPos * worldXRatio + (worldXRatio / 2),
             cargo.yPos * worldYRatio + (worldYRatio / 2), 
-            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
+            defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
     frame.patrolList.forEach(patrol => {
         image(patrolImage,
             patrol.xPos * worldXRatio + (worldXRatio / 2),
             patrol.yPos * worldYRatio + (worldYRatio / 2),
-            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
+            defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
     frame.pirateList.forEach(pirate => {
         image(pirateImage,
             pirate.xPos * worldXRatio + (worldXRatio / 2),
             pirate.yPos * worldYRatio + (worldYRatio / 2),
-            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
+            defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
     frame.captureList.forEach(capture => {
         image(captureImage,
             capture.xPos * worldXRatio + (worldXRatio / 2),
             capture.yPos * worldYRatio + (worldYRatio / 2),
-            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
+            defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
 }
 
@@ -164,6 +165,11 @@ function mouseWheel(event) {
     if (scaleFactor < 1) {
         scaleFactor = 1;
         return;
+    }
+
+    // Cap image scaling once they shrink to the size of one grid cell, with some padding
+    if (defaultImageSize / scaleFactor > worldXRatio - (worldXRatio / 5)) {
+        imageScaleFactor = scaleFactor;
     }
 
     translateX = mouseX - s * mouseX + s * translateX;
