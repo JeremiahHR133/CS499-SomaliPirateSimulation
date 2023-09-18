@@ -84,5 +84,13 @@ body {
 
 }
 
+#cellSettings{
+    color: white;
+}
+
+#cellRow{
+    float: left;
+}
+
 
 
