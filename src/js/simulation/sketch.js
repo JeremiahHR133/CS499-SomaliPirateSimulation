@@ -13,6 +13,7 @@ let scaleFactor = 1;
 let translateX = 0, translateY = 0;
 let worldXRatio, worldYRatio;
 let canvasWidth, canvasHeight;
+let mouseOnCanvas = false;
 let defaultImageSize = 40;
 
 function preload() {
@@ -104,7 +105,19 @@ function lockToViewport() {
     }
 }
 
+document.getElementById("P5-DRAWING-CANVAS").onmouseover = event => {
+    mouseOnCanvas = true;
+}
+
+document.getElementById("P5-DRAWING-CANVAS").onmouseleave = event => {
+    mouseOnCanvas = false;
+}
+
 function mouseWheel(event) {
+    if (!mouseOnCanvas) {
+        return;
+    }
+
     let s = event.delta > 0 ? 0.95 : 1.05;
 
     scaleFactor *= s;
@@ -119,6 +132,10 @@ function mouseWheel(event) {
 }
 
 function mouseDragged() {
+    if (!mouseOnCanvas) {
+        return;
+    }
+
     translateX += movedX;
     translateY += movedY;
 }
