@@ -12,14 +12,17 @@ let captureImage;
 let scaleFactor = 1;
 let imageScaleFactor = scaleFactor;
 let translateX = 0, translateY = 0;
+let scaleToShowGrid = 3.5;
+let gridLineScaleFactor = 0.5;
 let worldXRatio, worldYRatio;
 let canvasWidth, canvasHeight;
 let mouseOnCanvas = false;
 let defaultImageSize;
-let scaleToShowGrid = 3.5;
+let gridLineThick;
+let gridLineThin;
 
 function preload() {
-    bgImage = loadImage("images/gulfofaden.png");
+    bgImage = loadImage("images/GulfOfAdenCorrectAspectRatio.png");
     cargoImage = loadImage("images/cargo.png");
     patrolImage = loadImage("images/warship2.png");
     pirateImage = loadImage("images/pirate.png");
@@ -31,8 +34,10 @@ function setup() {
     canvasWidth = screen.width;
     canvasHeight = screen.width / 4;
 
-    // Meant to have 40 pixels on a 1920 x 1080 screen
+    // Give elements hard coded sizes that are still relative to the screen size
     defaultImageSize = 40 * (screen.width / 1920);
+    gridLineThick = 1.0 * (screen.width / 1920);
+    gridLineThin = 0.4 * (screen.width / 1920);
 
     createCanvas(canvasWidth, canvasHeight, document.getElementById("P5-DRAWING-CANVAS"));
     background(0, 0, 0);
@@ -92,33 +97,24 @@ function drawBoatSprites() {
 
 function drawGridLines() {
     stroke(0, 0, 0);
+    let thickness; // line thickness
     if (scaleFactor > scaleToShowGrid) {
-        strokeWeight(0.4);
-        // Draw the grid
         // Draw the horizontal lines
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i += 1) {
-            if (i % 4 == 0) {
-                strokeWeight(1);
-            }
-            else {
-                strokeWeight(0.4);
-            }
+            thickness = (i % 4 == 0 ? gridLineThick : gridLineThin) / Math.pow(scaleFactor, gridLineScaleFactor);
+            strokeWeight(thickness);
             line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
         }
         // Draw vertical lines
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; i += 1) {
-            if (i % 4 == 0) {
-                strokeWeight(1);
-            }
-            else {
-                strokeWeight(0.4);
-            }
+            thickness = (i % 4 == 0 ? gridLineThick : gridLineThin) / Math.pow(scaleFactor, gridLineScaleFactor);
+            strokeWeight(thickness);
             line(i * worldXRatio, 0, i * worldXRatio, simManager.simulation.initialConditions.simDimensions[0] * worldYRatio);
         }
     }
     else {
-        strokeWeight(1);
-        // Draw the grid
+        thickness = gridLineThick / Math.sqrt(scaleFactor, gridLineScaleFactor);
+        strokeWeight(thickness);
         // Draw the horizontal lines
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i += 4) {
             line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
@@ -154,14 +150,21 @@ document.getElementById("P5-DRAWING-CANVAS").onmouseleave = event => {
 }
 
 function mouseWheel(event) {
+    // Only zoom when over the canvas
     if (!mouseOnCanvas) {
         return;
     }
 
     let s = event.delta > 0 ? 0.95 : 1.05;
 
+    // Don't zoom in beyond 105x
+    if (scaleFactor * s > 105) {
+        return;
+    }
+
     scaleFactor *= s;
 
+    // Don't zoom out beyond 1x
     if (scaleFactor < 1) {
         scaleFactor = 1;
         return;
