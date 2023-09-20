@@ -10,15 +10,19 @@ let captureImage;
 
 // Graphics variables
 let scaleFactor = 1;
+let imageScaleFactor = scaleFactor;
 let translateX = 0, translateY = 0;
+let scaleToShowGrid = 3.5;
+let gridLineScaleFactor = 0.5;
 let worldXRatio, worldYRatio;
 let canvasWidth, canvasHeight;
 let mouseOnCanvas = false;
-let defaultImageSize = 40;
-let scaleToShowGrid = 3.5;
+let defaultImageSize;
+let gridLineThick;
+let gridLineThin;
 
 function preload() {
-    bgImage = loadImage("images/gulfofaden.png");
+    bgImage = loadImage("images/GulfOfAdenCorrectAspectRatio.png");
     cargoImage = loadImage("images/cargo.png");
     patrolImage = loadImage("images/warship2.png");
     pirateImage = loadImage("images/pirate.png");
@@ -29,6 +33,11 @@ function setup() {
     // put setup code here
     canvasWidth = screen.width;
     canvasHeight = screen.width / 4;
+
+    // Give elements hard coded sizes that are still relative to the screen size
+    defaultImageSize = 40 * (screen.width / 1920);
+    gridLineThick = 1.0 * (screen.width / 1920);
+    gridLineThin = 0.4 * (screen.width / 1920);
 
     createCanvas(canvasWidth, canvasHeight, document.getElementById("P5-DRAWING-CANVAS"));
     background(0, 0, 0);
@@ -64,57 +73,48 @@ function drawBoatSprites() {
         image(cargoImage,
             cargo.xPos * worldXRatio + (worldXRatio / 2),
             cargo.yPos * worldYRatio + (worldYRatio / 2), 
-            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
+            defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
     frame.patrolList.forEach(patrol => {
         image(patrolImage,
             patrol.xPos * worldXRatio + (worldXRatio / 2),
             patrol.yPos * worldYRatio + (worldYRatio / 2),
-            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
+            defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
     frame.pirateList.forEach(pirate => {
         image(pirateImage,
             pirate.xPos * worldXRatio + (worldXRatio / 2),
             pirate.yPos * worldYRatio + (worldYRatio / 2),
-            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
+            defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
     frame.captureList.forEach(capture => {
         image(captureImage,
             capture.xPos * worldXRatio + (worldXRatio / 2),
             capture.yPos * worldYRatio + (worldYRatio / 2),
-            defaultImageSize / scaleFactor, defaultImageSize / scaleFactor);
+            defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
 }
 
 function drawGridLines() {
     stroke(0, 0, 0);
+    let thickness; // line thickness
     if (scaleFactor > scaleToShowGrid) {
-        strokeWeight(0.4);
-        // Draw the grid
         // Draw the horizontal lines
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i += 1) {
-            if (i % 4 == 0) {
-                strokeWeight(1);
-            }
-            else {
-                strokeWeight(0.4);
-            }
+            thickness = (i % 4 == 0 ? gridLineThick : gridLineThin) / Math.pow(scaleFactor, gridLineScaleFactor);
+            strokeWeight(thickness);
             line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
         }
         // Draw vertical lines
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; i += 1) {
-            if (i % 4 == 0) {
-                strokeWeight(1);
-            }
-            else {
-                strokeWeight(0.4);
-            }
+            thickness = (i % 4 == 0 ? gridLineThick : gridLineThin) / Math.pow(scaleFactor, gridLineScaleFactor);
+            strokeWeight(thickness);
             line(i * worldXRatio, 0, i * worldXRatio, simManager.simulation.initialConditions.simDimensions[0] * worldYRatio);
         }
     }
     else {
-        strokeWeight(1);
-        // Draw the grid
+        thickness = gridLineThick / Math.sqrt(scaleFactor, gridLineScaleFactor);
+        strokeWeight(thickness);
         // Draw the horizontal lines
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i += 4) {
             line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
@@ -150,17 +150,29 @@ document.getElementById("P5-DRAWING-CANVAS").onmouseleave = event => {
 }
 
 function mouseWheel(event) {
+    // Only zoom when over the canvas
     if (!mouseOnCanvas) {
         return;
     }
 
     let s = event.delta > 0 ? 0.95 : 1.05;
 
+    // Don't zoom in beyond 105x
+    if (scaleFactor * s > 105) {
+        return;
+    }
+
     scaleFactor *= s;
 
+    // Don't zoom out beyond 1x
     if (scaleFactor < 1) {
         scaleFactor = 1;
         return;
+    }
+
+    // Cap image scaling once they shrink to the size of one grid cell, with some padding
+    if (defaultImageSize / scaleFactor > worldXRatio - (worldXRatio / 5)) {
+        imageScaleFactor = scaleFactor;
     }
 
     translateX = mouseX - s * mouseX + s * translateX;
