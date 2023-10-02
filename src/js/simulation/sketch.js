@@ -3,6 +3,7 @@ let simManager;
 
 // Images
 let bgImage;
+let bgImageNight;
 let cargoImage;
 let patrolImage;
 let pirateImage;
@@ -23,6 +24,7 @@ let gridLineThin;
 
 function preload() {
     bgImage = loadImage("images/GulfOfAdenCorrectAspectRatio.png");
+    bgImageNight = loadImage("images/GulfOfAdenCorrectAspectRatioNightTime.png");
     cargoImage = loadImage("images/cargo.png");
     patrolImage = loadImage("images/warship2.png");
     pirateImage = loadImage("images/pirate.png");
@@ -58,7 +60,7 @@ function draw() {
 
     // Draw the map
     imageMode(CORNER);
-    image(bgImage, 0, 0, canvasWidth, canvasHeight);
+    image(simManager.isDayTime() ? bgImage : bgImageNight, 0, 0, canvasWidth, canvasHeight);
 
     drawGridLines();
 

@@ -121,6 +121,13 @@ class Simulation {
         this.frames.push(newFrame);
     }
 
+    isDayTime() {
+        if(this.currentFrameNumber == 0) {
+            return true;
+        }
+        return this.frames[this.currentFrameNumber].isDayFrame;
+    }
+
     getCurrentFrame() {
         return this.frames[this.currentFrameNumber];
     }
