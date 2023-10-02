@@ -26,6 +26,10 @@ class SimManager {
         }
     }
 
+    isDayTime() {
+        return this.simulation.isDayTime();
+    }
+
     setSpeed1x() {
         this.frametime = this.baseFrametime;
     }
