@@ -208,7 +208,7 @@ class PirateShip extends Ship {
         }
         for (let i = 0; i < frame.cargoList.length; i++) {
             const cargo = frame.cargoList[i];
-            if (this.inRangeLoose(cargo, 3)) {
+            if (this.inRangeLoose(cargo, frame.isDayFrame ? 3 : 2)) {
                 // If the cargo is getting captured then they evaded all the pirates
                 // in their evadedList successfully except the one capturing them now
                 simStats.evadesNotCaptured += cargo.evadedPirates.length - (cargo.evadedPirates.includes(this.UniqueID) ? 1 : 0);

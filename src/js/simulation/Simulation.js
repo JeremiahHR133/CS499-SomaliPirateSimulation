@@ -108,8 +108,9 @@ class Simulation {
     tick() {
         this.currentSimTime += this.initialConditions.simTimeStep;
         this.currentFrameNumber += 1;
+        let isDay = this.initialConditions.considerDayNight && this.currentSimTime % (24 * 60) > (12 * 60) ? false : true;
         // (1)
-        let newFrame = new Frame(this.currentSimTime, this.frames[this.currentFrameNumber - 1]);
+        let newFrame = new Frame(this.currentSimTime, isDay, this.frames[this.currentFrameNumber - 1]);
         // (2)
         this.trySpawnEntity(newFrame, "Cargo", this.initialConditions.cargoSpawn, this.initialConditions.cargoProbs);
         this.trySpawnEntity(newFrame, "Pirate", this.initialConditions.pirateSpawn, this.initialConditions.pirateProbs);
@@ -118,6 +119,13 @@ class Simulation {
         newFrame.tick(this.simStatsData, [0, this.initialConditions.simDimensions[1]], [0, this.initialConditions.simDimensions[0]]);
         // (4)
         this.frames.push(newFrame);
+    }
+
+    isDayTime() {
+        if(this.currentFrameNumber == 0) {
+            return true;
+        }
+        return this.frames[this.currentFrameNumber].isDayFrame;
     }
 
     getCurrentFrame() {
