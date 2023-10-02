@@ -1,7 +1,8 @@
 class Frame {
     // Coppy constructor of sorts
-    constructor(frameTime, oldFrame) {
+    constructor(frameTime, isDayFrame, oldFrame) {
         this.frameTime = frameTime;
+        this.isDayFrame = isDayFrame;
         this.cargoList = [];
         this.patrolList = [];
         this.pirateList = [];
