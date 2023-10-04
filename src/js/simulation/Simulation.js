@@ -7,6 +7,14 @@ class ProbabilityCell {
 
         this.modifiedByUser = false;
     }
+
+    toString() {
+        let ret = "=== Sim Cell Data (without initial cond. cells) ===\n";
+        ret += "\t" + "Index             : " + this.index + "\n";
+        ret += "\t" + "Probability       : " + this.probability + "\n";
+        ret += "\t" + "Modified By User  : " + this.modifiedByUser + "\n";
+        return ret;
+    }
 }
 
 // This class holds any data that is constant for the duration of the simulation after
@@ -16,7 +24,7 @@ class InitSimData {
         this.simRunTime = 24 * 60; // Specified in minutes
         this.simTimeStep = 5;      // Specified in minutes
         this.simDimensions = [100, 400]; // 100 rows by 400 columns 
-        this.considerDayNight = false; // Specifies if individual day / night settings should be used
+        this.considerDayNight = true; // Specifies if individual day / night settings should be used
 
         // Default probabilities for spawn
         this.cargoSpawn = 0.5;
@@ -24,22 +32,37 @@ class InitSimData {
         this.pirateSpawn = 0.4;
 
         // Probability lists
-        this.cargoProbs = [];
-        this.patrolProbs = [];
-        this.pirateProbs = [];
+        this.dayCargoProbs = [];
+        this.dayPatrolProbs = [];
+        this.dayPirateProbs = [];
+
+        this.nightCargoProbs = [];
+        this.nightPatrolProbs = [];
+        this.nightPirateProbs = [];
 
         // Initializing probabilities with all cells equaly likely
         // Cargos enter from the left
         for (let i = 0; i < this.simDimensions[0]; i++) {
-            this.cargoProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[0]))
+            this.dayCargoProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[0]))
         }
         // Patrols enter from the right
         for (let i = 0; i < this.simDimensions[0]; i++) {
-            this.patrolProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[0]))
+            this.dayPatrolProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[0]))
         }
         // Pirates enter from the bottom
         for (let i = 0; i < this.simDimensions[1]; i++) {
-            this.pirateProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[1]))
+            this.dayPirateProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[1]))
+        }
+        for (let i = 0; i < this.simDimensions[0]; i++) {
+            this.nightCargoProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[0]))
+        }
+        // Patrols enter from the right
+        for (let i = 0; i < this.simDimensions[0]; i++) {
+            this.nightPatrolProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[0]))
+        }
+        // Pirates enter from the bottom
+        for (let i = 0; i < this.simDimensions[1]; i++) {
+            this.nightPirateProbs.push(new ProbabilityCell(i, 1 / this.simDimensions[1]))
         }
     }
 
@@ -101,7 +124,7 @@ class Simulation {
     }
 
     // Flow of tick() function should be:
-    //  (1) Create a new frame from the previous frame (coppy existing entities)
+    //  (1) Create a new frame from the previous frame (copy existing entities)
     //  (2) Spawn new entities into the frame (such that after a tick they will "move into the map")
     //  (3) Tick the new frame 
     //  (4) Save the ticked frame to the frame list
@@ -112,9 +135,16 @@ class Simulation {
         // (1)
         let newFrame = new Frame(this.currentSimTime, isDay, this.frames[this.currentFrameNumber - 1]);
         // (2)
-        this.trySpawnEntity(newFrame, "Cargo", this.initialConditions.cargoSpawn, this.initialConditions.cargoProbs);
-        this.trySpawnEntity(newFrame, "Pirate", this.initialConditions.pirateSpawn, this.initialConditions.pirateProbs);
-        this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.patrolSpawn, this.initialConditions.patrolProbs);
+        if(isDay == true){
+            this.trySpawnEntity(newFrame, "Cargo", this.initialConditions.cargoSpawn, this.initialConditions.dayCargoProbs);
+            this.trySpawnEntity(newFrame, "Pirate", this.initialConditions.pirateSpawn, this.initialConditions.dayPirateProbs);
+            this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.patrolSpawn, this.initialConditions.dayPatrolProbs);
+        }
+        else{
+            this.trySpawnEntity(newFrame, "Cargo", this.initialConditions.cargoSpawn, this.initialConditions.nightCargoProbs);
+            this.trySpawnEntity(newFrame, "Pirate", this.initialConditions.pirateSpawn, this.initialConditions.nightPirateProbs);
+            this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.patrolSpawn, this.initialConditions.nightPatrolProbs);
+        }
         // (3)
         newFrame.tick(this.simStatsData, [0, this.initialConditions.simDimensions[1]], [0, this.initialConditions.simDimensions[0]]);
         // (4)

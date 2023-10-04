@@ -45,32 +45,47 @@
         <div>Patrol Spawn Rate: <textarea name="patrol" id="patrolSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
         <div>Pirate Spawn Rate: <textarea name="pirate" id="pirateSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
         <br>
-        <div id="cellRow">Row: <textarea name="rowNumber" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div id="cellColumn">Column: <textarea name="columnNumber" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div>Percentage chance a boat will spawn in this cell: <textarea name="cellSpawnChance" id="cellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
-        <div><input type="checkbox">Day/Night Toggle</div><br>
+        <div id="cellRow">Row: <textarea name="normRowNumber" id="normCellRow" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div id="cellColumn">Column: <textarea name="normColumnNumber" id="normCellColumn" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div id="normCellPercent">Percentage chance a boat will spawn in this cell: <textarea name="cellSpawnChance" id="normCellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
+        <select id="normCornerBoatSelect">
+            <option value="patrol">Patrol</option>
+            <option value="pirate">Pirate</option>
+        </select>
+        <div id="normSave"><button onclick="simManager.normalSave()">Save Normal Settings</button></div>
+        <div id="DNToggleContainer"><input id="DNToggle" type="checkbox">Day/Night Toggle</div><br>
     </div>
 
     <div id="daySettings">
         Day                   
-        <div id="cargoSpawnRateDay">Cargo Spawn Rate: <textarea name="cargoDay" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div id="patrolSpawnRateDay">Patrol Spawn Rate: <textarea name="patrolDay" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div id="pirateSpawnRateDay">Pirate Spawn Rate: <textarea name="pirateDay" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Cargo Spawn Rate: <textarea name="cargoDay" id="cargoSpawnRateDay" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Patrol Spawn Rate: <textarea name="patrolDay" id="patrolSpawnRateDay" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Pirate Spawn Rate: <textarea name="pirateDay" id="pirateSpawnRateDay" cols="10" rows="1" style="resize:none"></textarea></div>
         <br>
-        <div id="cellRow">Row: <textarea name="rowNumber" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div id="cellColumn">Column: <textarea name="columnNumber" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div>Percentage chance a boat will spawn in this cell: <textarea name="cellSpawnChance" id="cellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
+        <div id="cellRow">Row: <textarea name="dayRowNumber" id="dayCellRow" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div id="cellColumn">Column: <textarea name="dayColumnNumber" id="dayCellColumn" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div>Percentage chance a boat will spawn in this cell: <textarea name="cellSpawnChance" id="dayCellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
+        <select id="dayCornerBoatSelect">
+            <option value="patrol">Patrol</option>
+            <option value="pirate">Pirate</option>
+        </select>
+        <div><button onclick="simManager.daySave()">Save Day Settings</button></div>
     </div>
 
     <div id="nightSettings">
         Night
-        <div id="cargoSpawnRateNight">Cargo Spawn Rate: <textarea name="cargoNight" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div id="patrolSpawnRateNight">Patrol Spawn Rate: <textarea name="patrolNight" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div id="pirateSpawnRateNight">Pirate Spawn Rate: <textarea name="pirateNight" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Cargo Spawn Rate: <textarea name="cargoNight" id="cargoSpawnRateNight" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Patrol Spawn Rate: <textarea name="patrolNight" id="patrolSpawnRateNight" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Pirate Spawn Rate: <textarea name="pirateNight" id="pirateSpawnRateNight" cols="10" rows="1" style="resize:none"></textarea></div>
         <br>
-        <div id="cellRow">Row: <textarea name="rowNumber" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div id="cellColumn">Column: <textarea name="columnNumber" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div>Percentage chance a boat will spawn in this cell: <textarea name="cellSpawnChance" id="cellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
+        <div id="cellRow">Row: <textarea name="nightRowNumber" id="nightCellRow" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div id="cellColumn">Column: <textarea name="nightColumnNumber" id="nightCellColumn" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div>Percentage chance a boat will spawn in this cell: <textarea name="cellSpawnChance" id="nightCellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
+        <select id="nightCornerBoatSelect">
+            <option value="patrol">Patrol</option>
+            <option value="pirate">Pirate</option>
+        </select>
+        <div><button onclick="simManager.nightSave()">Save Night Settings</button></div>
     </div><br>
 
 
@@ -83,5 +98,7 @@
     <script src="/src/js/simulation/Simulation.js"></script>
     <script src="/src/js/simulation/SimManager.js"></script>
     <script src="/src/js/simulation/sketch.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.3.0/math.min.js></script>
 </body>
 </html>

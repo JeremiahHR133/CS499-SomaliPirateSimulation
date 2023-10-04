@@ -65,6 +65,26 @@ body {
     display: inline-flex;
 }
 
+#normCornerBoatSelect{
+    margin-bottom: 0.15in;
+}
+
+#dayCornerBoatSelect{
+    margin-bottom: 0.15in;
+}
+
+#nightCornerBoatSelect{
+    margin-bottom: 0.15in;
+}
+
+#normSave{
+    margin-bottom: 0.5in;
+}
+
+#DNToggleContainer{
+    margin-bottom: 0.25in;
+}
+
 #evadesCaptured{
     display: inline-flex;
 }

@@ -195,8 +195,130 @@ function mouseClicked() {
         // If the mouse was clicked on the canvas and we are seeing the full grid resolution
         // then we can determine which cell was clicked on by reversing the math done to draw the cell
         if (mouseOnCanvas && scaleFactor > scaleToShowGrid) {
-            console.log(Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor));
-            console.log(Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor));
+            document.getElementsByName("dayRowNumber").values().next().value.innerHTML = "";
+            document.getElementsByName("dayColumnNumber").values().next().value.innerHTML = "";
+            document.getElementsByName("nightRowNumber").values().next().value.innerHTML = "";
+            document.getElementsByName("nightColumnNumber").values().next().value.innerHTML = "";
+            document.getElementsByName("normColumnNumber").values().next().value.innerHTML = "";
+            document.getElementsByName("normRowNumber").values().next().value.innerHTML = "";
+            var checkedValue = $("#DNToggle").is(":checked");
+            if(checkedValue){
+                document.getElementsByName("dayRowNumber").values().next().value.innerHTML = Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor);
+                document.getElementsByName("dayColumnNumber").values().next().value.innerHTML = Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor);
+                document.getElementsByName("nightRowNumber").values().next().value.innerHTML = Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor);
+                document.getElementsByName("nightColumnNumber").values().next().value.innerHTML = Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor);
+                if(document.getElementsByName("dayColumnNumber").values().next().value.innerHTML == 0 && document.getElementsByName("dayRowNumber").values().next().value.innerHTML == 99){
+                    let child1day = document.getElementById("dayCornerBoatSelect").firstChild;
+                    let child2day = document.getElementById("dayCornerBoatSelect").lastChild;
+                    let child1night = document.getElementById("nightCornerBoatSelect").firstChild;
+                    let child2night = document.getElementById("nightCornerBoatSelect").lastChild;
+                    const myDayNode = document.getElementById("dayCornerBoatSelect");
+                    while (myDayNode.firstChild) {
+                      myDayNode.removeChild(myDayNode.lastChild);
+                    }
+                    const myNightNode = document.getElementById("nightCornerBoatSelect");
+                    while (myNightNode.firstChild) {
+                      myNightNode.removeChild(myNightNode.lastChild);
+                    }
+                    let child1daynew = document.createElement("option");
+                    let child1nightnew = document.createElement("option");
+                    child1daynewtext = document.createTextNode("Cargo");
+                    child1nightnewtext = document.createTextNode("Cargo");
+                    child1daynew.appendChild(child1daynewtext);
+                    child1nightnew.appendChild(child1nightnewtext);
+                    child1daynew.value = "cargo";
+                    child1nightnew.value = "cargo";
+                    let child2daynew = document.createElement("option");
+                    let child2nightnew = document.createElement("option");
+                    child2daynewtext = document.createTextNode("Pirate");
+                    child2nightnewtext = document.createTextNode("Pirate");
+                    child2daynew.appendChild(child2daynewtext);
+                    child2nightnew.appendChild(child2nightnewtext);
+                    child2daynew.value = "pirate";
+                    child2nightnew.value = "pirate";
+                    document.getElementById("dayCornerBoatSelect").appendChild(child1daynew);
+                    document.getElementById("dayCornerBoatSelect").appendChild(child2daynew);
+                    document.getElementById("nightCornerBoatSelect").appendChild(child1nightnew);
+                    document.getElementById("nightCornerBoatSelect").appendChild(child2nightnew);
+                }
+                if(document.getElementsByName("dayColumnNumber").values().next().value.innerHTML == 399 && document.getElementsByName("dayRowNumber").values().next().value.innerHTML == 99){
+                    let child1day = document.getElementById("dayCornerBoatSelect").firstChild;
+                    let child2day = document.getElementById("dayCornerBoatSelect").lastChild;
+                    let child1night = document.getElementById("nightCornerBoatSelect").firstChild;
+                    let child2night = document.getElementById("nightCornerBoatSelect").lastChild;
+                    const myDayNode = document.getElementById("dayCornerBoatSelect");
+                    while (myDayNode.firstChild) {
+                      myDayNode.removeChild(myDayNode.lastChild);
+                    }
+                    const myNightNode = document.getElementById("nightCornerBoatSelect");
+                    while (myNightNode.firstChild) {
+                      myNightNode.removeChild(myNightNode.lastChild);
+                    }
+                    let child1daynew = document.createElement("option");
+                    let child1nightnew = document.createElement("option");
+                    child1daynewtext = document.createTextNode("Patrol");
+                    child1nightnewtext = document.createTextNode("Patrol");
+                    child1daynew.appendChild(child1daynewtext);
+                    child1nightnew.appendChild(child1nightnewtext);
+                    child1daynew.value = "patrol";
+                    child1nightnew.value = "patrol";
+                    let child2daynew = document.createElement("option");
+                    let child2nightnew = document.createElement("option");
+                    child2daynewtext = document.createTextNode("Pirate");
+                    child2nightnewtext = document.createTextNode("Pirate");
+                    child2daynew.appendChild(child2daynewtext);
+                    child2nightnew.appendChild(child2nightnewtext);
+                    child2daynew.value = "pirate";
+                    child2nightnew.value = "pirate";
+                    document.getElementById("dayCornerBoatSelect").appendChild(child1daynew);
+                    document.getElementById("dayCornerBoatSelect").appendChild(child2daynew);
+                    document.getElementById("nightCornerBoatSelect").appendChild(child1nightnew);
+                    document.getElementById("nightCornerBoatSelect").appendChild(child2nightnew);
+                }
+            }
+            else{
+                //console.log(Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor));
+                document.getElementsByName("normColumnNumber").values().next().value.innerHTML = Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor);
+                //console.log(Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor));
+                document.getElementsByName("normRowNumber").values().next().value.innerHTML = Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor);
+                if(document.getElementsByName("normColumnNumber").values().next().value.innerHTML == 0 && document.getElementsByName("normRowNumber").values().next().value.innerHTML == 99){
+                    let child1 = document.getElementById("normCornerBoatSelect").firstChild;
+                    let child2 = document.getElementById("normCornerBoatSelect").lastChild;
+                    const myNode = document.getElementById("normCornerBoatSelect");
+                    while (myNode.firstChild) {
+                      myNode.removeChild(myNode.lastChild);
+                    }
+                    let child1new = document.createElement("option");
+                    child1newtext = document.createTextNode("Cargo");
+                    child1new.appendChild(child1newtext);
+                    child1new.value = "cargo";
+                    let child2new = document.createElement("option");
+                    child2newtext = document.createTextNode("Pirate");
+                    child2new.appendChild(child2newtext);
+                    child2new.value = "pirate";
+                    document.getElementById("normCornerBoatSelect").appendChild(child1new);
+                    document.getElementById("normCornerBoatSelect").appendChild(child2new);
+                }
+                if(document.getElementsByName("normColumnNumber").values().next().value.innerHTML == 399 && document.getElementsByName("normRowNumber").values().next().value.innerHTML == 99){
+                    let child1 = document.getElementById("normCornerBoatSelect").firstChild;
+                    let child2 = document.getElementById("normCornerBoatSelect").lastChild;
+                    const myNode = document.getElementById("normCornerBoatSelect");
+                    while (myNode.firstChild) {
+                      myNode.removeChild(myNode.lastChild);
+                    }
+                    let child1new = document.createElement("option");
+                    child1newtext = document.createTextNode("Patrol");
+                    child1new.appendChild(child1newtext);
+                    child1new.value = "patrol";
+                    let child2new = document.createElement("option");
+                    child2newtext = document.createTextNode("Pirate");
+                    child2new.appendChild(child2newtext);
+                    child2new.value = "pirate";
+                    document.getElementById("normCornerBoatSelect").appendChild(child1new);
+                    document.getElementById("normCornerBoatSelect").appendChild(child2new);
+                }
+            }
+            
         }
     }
 }
@@ -223,7 +345,8 @@ function setSpeed20x() {
 }
 
 function setSpeedBackwards() {
-    console.log(simManager.simulation.simStatsData.toString(""));
+    console.log(document.getElementById("normCornerBoatSelect").value);
+    console.log(simManager.simulation.initialConditions.cargoSpawn)
 }
 
 function startSim() {
@@ -239,5 +362,8 @@ function setSpeedSingle() {
 }
 
 function cancelSim() {
+    console.log(simManager.simulation.initialConditions.nightCargoProbs.toString());
+    console.log(simManager.simulation.initialConditions.nightPatrolProbs.toString());
+    console.log(simManager.simulation.initialConditions.nightPirateProbs.toString());
 
 }
