@@ -201,17 +201,13 @@ function mouseClicked() {
             document.getElementsByName("nightColumnNumber").values().next().value.innerHTML = "";
             document.getElementsByName("normColumnNumber").values().next().value.innerHTML = "";
             document.getElementsByName("normRowNumber").values().next().value.innerHTML = "";
-            var checkedValue = $("#DNToggle").is(":checked");
+            var checkedValue = simManager.simulation.initialConditions.considerDayNight;
             if(checkedValue){
                 document.getElementsByName("dayRowNumber").values().next().value.innerHTML = Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor);
                 document.getElementsByName("dayColumnNumber").values().next().value.innerHTML = Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor);
                 document.getElementsByName("nightRowNumber").values().next().value.innerHTML = Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor);
                 document.getElementsByName("nightColumnNumber").values().next().value.innerHTML = Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor);
                 if(document.getElementsByName("dayColumnNumber").values().next().value.innerHTML == 0 && document.getElementsByName("dayRowNumber").values().next().value.innerHTML == 99){
-                    let child1day = document.getElementById("dayCornerBoatSelect").firstChild;
-                    let child2day = document.getElementById("dayCornerBoatSelect").lastChild;
-                    let child1night = document.getElementById("nightCornerBoatSelect").firstChild;
-                    let child2night = document.getElementById("nightCornerBoatSelect").lastChild;
                     const myDayNode = document.getElementById("dayCornerBoatSelect");
                     while (myDayNode.firstChild) {
                       myDayNode.removeChild(myDayNode.lastChild);
@@ -242,10 +238,6 @@ function mouseClicked() {
                     document.getElementById("nightCornerBoatSelect").appendChild(child2nightnew);
                 }
                 if(document.getElementsByName("dayColumnNumber").values().next().value.innerHTML == 399 && document.getElementsByName("dayRowNumber").values().next().value.innerHTML == 99){
-                    let child1day = document.getElementById("dayCornerBoatSelect").firstChild;
-                    let child2day = document.getElementById("dayCornerBoatSelect").lastChild;
-                    let child1night = document.getElementById("nightCornerBoatSelect").firstChild;
-                    let child2night = document.getElementById("nightCornerBoatSelect").lastChild;
                     const myDayNode = document.getElementById("dayCornerBoatSelect");
                     while (myDayNode.firstChild) {
                       myDayNode.removeChild(myDayNode.lastChild);
@@ -277,13 +269,9 @@ function mouseClicked() {
                 }
             }
             else{
-                //console.log(Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor));
                 document.getElementsByName("normColumnNumber").values().next().value.innerHTML = Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor);
-                //console.log(Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor));
                 document.getElementsByName("normRowNumber").values().next().value.innerHTML = Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor);
                 if(document.getElementsByName("normColumnNumber").values().next().value.innerHTML == 0 && document.getElementsByName("normRowNumber").values().next().value.innerHTML == 99){
-                    let child1 = document.getElementById("normCornerBoatSelect").firstChild;
-                    let child2 = document.getElementById("normCornerBoatSelect").lastChild;
                     const myNode = document.getElementById("normCornerBoatSelect");
                     while (myNode.firstChild) {
                       myNode.removeChild(myNode.lastChild);
@@ -300,8 +288,6 @@ function mouseClicked() {
                     document.getElementById("normCornerBoatSelect").appendChild(child2new);
                 }
                 if(document.getElementsByName("normColumnNumber").values().next().value.innerHTML == 399 && document.getElementsByName("normRowNumber").values().next().value.innerHTML == 99){
-                    let child1 = document.getElementById("normCornerBoatSelect").firstChild;
-                    let child2 = document.getElementById("normCornerBoatSelect").lastChild;
                     const myNode = document.getElementById("normCornerBoatSelect");
                     while (myNode.firstChild) {
                       myNode.removeChild(myNode.lastChild);
@@ -366,4 +352,13 @@ function cancelSim() {
     console.log(simManager.simulation.initialConditions.nightPatrolProbs.toString());
     console.log(simManager.simulation.initialConditions.nightPirateProbs.toString());
 
+}
+
+function DNtoggle(){
+    if($("#DNToggle").is(":checked")){
+        simManager.simulation.initialConditions.considerDayNight = true
+    }
+    else{
+        simManager.simulation.initialConditions.considerDayNight = true
+    }
 }
