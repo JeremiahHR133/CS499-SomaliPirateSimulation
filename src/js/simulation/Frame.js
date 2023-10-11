@@ -12,6 +12,30 @@ class Frame {
         }
     }
 
+    importFromJSON(obj){
+        this.frameTime = obj.frameTime;
+
+        this.cargoList = [];
+        obj.cargoList.forEach(cargoShip => {
+            this.cargoList.push(new CargoShip(cargoShip.xPos, cargoShip.yPos, cargoShip.UniqueID));            
+        });
+
+        this.patrolList = [];
+        obj.patrolList.forEach(patrolShip => {
+            this.patrolList.push(new PatrolShip(patrolShip.xPos, patrolShip.yPos, patrolShip.UniqueID));            
+        });
+
+        this.pirateList = [];
+        obj.pirateList.forEach(pirateShip => {
+            this.pirateList.push(new PirateShip(pirateShip.xPos, pirateShip.yPos, pirateShip.UniqueID));            
+        });
+
+        this.captureList = [];
+        obj.captureList.forEach(captureShip => {
+            this.captureList.push(new CaptureShip(captureShip.xPos, captureShip.yPos, captureShip.UniqueID, captureShip.pirateUID));            
+        });
+    }
+
     cloneEntityList(newFrame) {
         this.cargoList.forEach(ship => {
             newFrame.cargoList.push(ship.clone());

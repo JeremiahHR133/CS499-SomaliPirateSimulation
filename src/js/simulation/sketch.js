@@ -21,6 +21,7 @@ let mouseOnCanvas = false;
 let defaultImageSize;
 let gridLineThick;
 let gridLineThin;
+let loadingFile = false;
 
 function preload() {
     bgImage = loadImage("images/GulfOfAdenCorrectAspectRatio.png");
@@ -51,6 +52,9 @@ function setup() {
 }
 
 function draw() {
+    if(loadingFile){
+        return;
+    }
     simManager.tick();
 
     // Manage zooming relative to the mouse and panning
@@ -201,6 +205,43 @@ function mouseClicked() {
     }
 }
 
+// ------------------------
+// Download Sim Function
+// ------------------------
+
+function downloadCurrentSim() {
+    //console.log(JSON.stringify(simManager))
+    const file = new File([JSON.stringify(simManager)], 'simulation.json', { type : 'application/json', })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(file)
+
+    link.href = url
+    link.download = file.name
+    document.body.appendChild(link)
+    link.click()
+
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+}
+
+// ------------------------
+// Import Simulation
+// ------------------------
+
+const input = document.querySelector('input[type="file"]')
+input.addEventListener('change', function(e){
+    const reader = new FileReader()
+    reader.readAsText(input.files[0])
+
+    loadingFile = true;
+    //.onload just waits until the file is ready to run the next function
+    reader.onload = function() {
+        //
+        //const { singleStepMode, paused, baseFrametime, frametime, prevTime, simulation } = JSON.parse(reader.result);
+        simManager.importFromJSON(JSON.parse(reader.result));
+        loadingFile = false;
+    }
+})
 
 // ------------------------
 // HTML interface functions
