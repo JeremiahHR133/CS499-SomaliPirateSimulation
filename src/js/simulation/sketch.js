@@ -264,7 +264,7 @@ function setSpeed20x() {
 }
 
 function setSpeedBackwards() {
-    console.log(simManager.simulation.simStatsData.toString(""));
+    simManager.setSpeedBackwards();
 }
 
 function startSim() {
@@ -280,5 +280,9 @@ function setSpeedSingle() {
 }
 
 function cancelSim() {
+    simManager.cancelSim();
+}
 
+function resetReplayToStart() {
+    simManager.resetToStart();
 }
