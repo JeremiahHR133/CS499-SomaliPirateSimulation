@@ -9,6 +9,16 @@ class SimManager {
         this.simulation = new Simulation();
     }
 
+    importFromJSON(obj) {
+        this.singleStepMode = obj.singleStepMode;
+        this.paused = obj.paused;
+        this.baseFrametime = obj.baseFrametime; // ms
+        this.frametime = obj.frametime; // ms
+        this.prevTime = 0;
+
+        this.simulation.importFromJSON(obj.simulation);
+    }
+
     tick() {
         if (this.paused) {
             return;
