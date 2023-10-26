@@ -77,9 +77,6 @@ body {
     margin-bottom: 0.15in;
 }
 
-#normSave{
-    margin-bottom: 0.5in;
-}
 
 #DNToggleContainer{
     margin-bottom: 0.25in;
@@ -96,8 +93,10 @@ body {
 
 #daySettings{
     color: white;
-    float: left;
+    float: none;
     margin-right: 1in;
+    margin-bottom: 0.40in;
+    margin-top: 0.25in;
 }
 
 #nightSettings{

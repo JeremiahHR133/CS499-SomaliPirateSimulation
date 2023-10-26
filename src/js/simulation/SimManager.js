@@ -84,76 +84,6 @@ class SimManager {
         document.getElementById("evadesCaptured").innerText = this.simulation.simStatsData.evadesCaptured;
     }
 
-    normalSave() {
-        let cargoSpawn = document.getElementById("cargoSpawnRate").value;
-        let patrolSpawn = document.getElementById("patrolSpawnRate").value;
-        let pirateSpawn = document.getElementById("pirateSpawnRate").value;
-        let normrownumber = document.getElementById("normCellRow").value;
-        let normcolumnnumber = document.getElementById("normCellColumn").value;
-        let normcellspawn = document.getElementById("normCellSpawnText").value;
-        let array = [cargoSpawn, patrolSpawn, pirateSpawn, normrownumber];
-        array.forEach(value => {
-            if(value != ""){
-                switch (array.indexOf(value)){
-                    case 0:
-                        
-                        this.simulation.initialConditions.cargoSpawn = Number(value);
-                        break;
-                    case 1:
-                        this.simulation.initialConditions.patrolSpawn = Number(value);
-                        break;
-                    case 2:
-                        this.simulation.initialConditions.pirateSpawn = Number(value);
-                        break;
-                    case 3:
-                        if(normcellspawn != null){
-
-                            if(normcolumnnumber == 0 && normrownumber != 99){
-                                //cargo
-                                this.simulation.initialConditions.dayCargoProbs[normrownumber].probability = Number(normcellspawn);
-                                this.simulation.initialConditions.dayCargoProbs[normrownumber].modifiedByUser = true;
-                            }
-                            if(normcolumnnumber == 0 && normrownumber == 99){
-                                //cargo
-                                if(document.getElementById("normCornerBoatSelect").value == "cargo"){
-                                    this.simulation.initialConditions.dayCargoProbs[normrownumber].probability = Number(normcellspawn);
-                                    this.simulation.initialConditions.dayCargoProbs[normrownumber].modifiedByUser = true;
-                                }
-                                if(document.getElementById("normCornerBoatSelect").value == "pirate"){
-                                    this.simulation.initialConditions.dayPirateProbs[normcolumnnumber].probability = Number(normcellspawn);
-                                    this.simulation.initialConditions.dayPirateProbs[normcolumnnumber].modifiedByUser = true;
-                                }
-                            }
-                            if(normrownumber == 99 && normcolumnnumber != 0 && normcolumnnumber != 399){
-                                //pirate
-                                this.simulation.initialConditions.dayPirateProbs[normcolumnnumber].probability = Number(normcellspawn);
-                                this.simulation.initialConditions.dayPirateProbs[normcolumnnumber].modifiedByUser = true;
-                            }
-                            if(normcolumnnumber == 399 && normrownumber != 99){
-                                //patrol
-                                this.simulation.initialConditions.dayPatrolProbs[normrownumber].probability = Number(normcellspawn);
-                                this.simulation.initialConditions.dayPatrolProbs[normrownumber].modifiedByUser = true;
-                            }
-                            if(normcolumnnumber == 399 && normrownumber == 99){
-                                //patrol
-                                if(document.getElementById("normCornerBoatSelect").value == "patrol"){
-                                    this.simulation.initialConditions.dayPatrolProbs[normrownumber].probability = Number(normcellspawn);
-                                    this.simulation.initialConditions.dayPatrolProbs[normrownumber].modifiedByUser = true;
-                                }
-                                if(document.getElementById("normCornerBoatSelect").value == "pirate"){
-                                    this.simulation.initialConditions.dayPirateProbs[normcolumnnumber].probability = Number(normcellspawn);
-                                    this.simulation.initialConditions.dayPirateProbs[normcolumnnumber].modifiedByUser = true;
-                                }
-                            }
-                        }
-                        break;
-                    
-                }
-                
-            }
-        });
-        simManager.probDist()
-    }
 
     daySave() {
         let cargoSpawn = document.getElementById("cargoSpawnRateDay").value;
@@ -178,7 +108,9 @@ class SimManager {
                         break;
                     case 3:
                         if(daycellspawn != null){
-
+                            if((this.simulation.initialConditions.totalInputCellProb + daycellspawn) >= 1.00){
+                                return;
+                            }
                             if(daycolumnnumber == 0 && dayrownumber != 99){
                                 //cargo
                                 this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability = Number(daycellspawn);
@@ -224,6 +156,7 @@ class SimManager {
             }
         });
         simManager.probDist()
+        this.simulation.initialConditions.totalInputCellProb = this.simulation.initialConditions.totalInputCellProb + daycellspawn;
     }
 
     nightSave() {

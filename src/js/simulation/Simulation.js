@@ -25,6 +25,7 @@ class InitSimData {
         this.simTimeStep = 5;      // Specified in minutes
         this.simDimensions = [100, 400]; // 100 rows by 400 columns 
         this.considerDayNight = false; // Specifies if individual day / night settings should be used
+        this.totalInputCellProb = 0;
 
         // Default probabilities for spawn
         this.cargoSpawn = 0.5;

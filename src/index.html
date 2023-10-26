@@ -39,23 +39,6 @@
         <div>Evades Captured: <div id="evadesCaptured">0</div></div>
     </div>
 
-    <div id="Normalsettings">
-        Normal Settings
-        <div>Cargo Spawn Rate: <textarea name="cargo" id="cargoSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div>Patrol Spawn Rate: <textarea name="patrol" id="patrolSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div>Pirate Spawn Rate: <textarea name="pirate" id="pirateSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
-        <br>
-        <div id="cellRow">Row: <textarea name="normRowNumber" id="normCellRow" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div id="cellColumn">Column: <textarea name="normColumnNumber" id="normCellColumn" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div id="normCellPercent">Percentage chance a boat will spawn in this cell: <textarea name="cellSpawnChance" id="normCellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
-        <select id="normCornerBoatSelect">
-            <option value="patrol">Patrol</option>
-            <option value="pirate">Pirate</option>
-        </select>
-        <div id="normSave"><button onclick="simManager.normalSave()">Save Normal Settings</button></div>
-        <div id="DNToggleContainer"><input id="DNToggle" type="checkbox" onclick="DNtoggle()">Day/Night Toggle</div><br>
-    </div>
-
     <div id="daySettings">
         Day                   
         <div>Cargo Spawn Rate: <textarea name="cargoDay" id="cargoSpawnRateDay" cols="10" rows="1" style="resize:none"></textarea></div>
@@ -71,6 +54,12 @@
         </select>
         <div><button onclick="simManager.daySave()">Save Day Settings</button></div>
     </div>
+
+    <div id="Normalsettings">
+        <div id="DNToggleContainer"><input id="DNToggle" type="checkbox" onclick="DNtoggle()">Day/Night Toggle</div><br>
+    </div>
+
+
 
     <div id="nightSettings">
         Night
