@@ -7,6 +7,10 @@ body {
     overflow: scroll;
 }
 
+body::-webkit-scrollbar{
+    display: none;
+}
+
 #buttons{
     color: white;
     margin: 0;
