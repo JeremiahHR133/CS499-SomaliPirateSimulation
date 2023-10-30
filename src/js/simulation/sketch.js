@@ -149,10 +149,12 @@ function lockToViewport() {
 
 document.getElementById("P5-DRAWING-CANVAS").onmouseover = event => {
     mouseOnCanvas = true;
+    document.body.style.position = "fixed";
 }
 
 document.getElementById("P5-DRAWING-CANVAS").onmouseleave = event => {
     mouseOnCanvas = false;
+    document.body.style.position = "relative";
 }
 
 function mouseWheel(event) {
