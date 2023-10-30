@@ -4,6 +4,11 @@ body {
     padding: 0;
     width:100%;
     height: 100%;
+    overflow: scroll;
+}
+
+body::-webkit-scrollbar{
+    display: none;
 }
 
 #buttons{
@@ -14,4 +19,103 @@ body {
     display: flex;
     justify-content: space-between;
 }
+
+#counts{
+    color: white;
+    text-align: right;
+    float: right;
+}
+
+#cargosEntered{
+    display: inline-flex;
+}
+
+#cargosExited{
+    display: inline-flex;
+}
+
+#patrolsEntered{
+    display: inline-flex;
+}
+
+#patrolsExited{
+    display: inline-flex;
+}
+
+#piratesEntered{
+    display: inline-flex;
+}
+
+#piratesExited{
+    display: inline-flex;
+}
+
+#capturesExited{
+    display: inline-flex;
+}
+
+#piratesDefeated{
+    display: inline-flex;
+}
+
+#cargosCaptured{
+    display: inline-flex;
+}
+
+#capturesRescued{
+    display: inline-flex;
+}
+
+#evadesNotCaptured{
+    display: inline-flex;
+}
+
+#normCornerBoatSelect{
+    margin-bottom: 0.15in;
+}
+
+#dayCornerBoatSelect{
+    margin-bottom: 0.15in;
+}
+
+#nightCornerBoatSelect{
+    margin-bottom: 0.15in;
+}
+
+
+#DNToggleContainer{
+    margin-bottom: 0.25in;
+}
+
+#evadesCaptured{
+    display: inline-flex;
+}
+
+#Normalsettings{
+    color: white;
+    float: none;
+}
+
+#daySettings{
+    color: white;
+    float: none;
+    margin-right: 1in;
+    margin-bottom: 0.40in;
+    margin-top: 0.25in;
+}
+
+#nightSettings{
+    color: white;
+
+}
+
+#cellSettings{
+    color: white;
+}
+
+#cellRow{
+    float: left;
+}
+
+
 
