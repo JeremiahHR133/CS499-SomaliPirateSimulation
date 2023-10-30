@@ -340,8 +340,7 @@ function setSpeed20x() {
 }
 
 function setSpeedBackwards() {
-    console.log(document.getElementById("normCornerBoatSelect").value);
-    console.log(simManager.simulation.initialConditions.cargoSpawn)
+    console.log(simManager.simulation.initialConditions.dayCargoProbs)
 }
 
 function startSim() {

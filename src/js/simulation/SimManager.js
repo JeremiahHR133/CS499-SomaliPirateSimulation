@@ -118,7 +118,7 @@ class SimManager {
                         break;
                     case 3:
                         if(daycellspawn != null){
-                            if((this.simulation.initialConditions.totalInputCellProb + daycellspawn) >= 1.00){
+                            if((this.simulation.initialConditions.totalInputCellProb + daycellspawn) > 1.00){
                                 return;
                             }
                             if(daycolumnnumber == 0 && dayrownumber != 99){
