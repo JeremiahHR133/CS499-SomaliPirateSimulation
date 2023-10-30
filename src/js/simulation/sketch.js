@@ -342,7 +342,7 @@ function setSpeed20x() {
 }
 
 function setSpeedBackwards() {
-    console.log(simManager.simulation.initialConditions.dayCargoProbs)
+    simManager.setSpeedBackwards();
 }
 
 function startSim() {
@@ -358,10 +358,11 @@ function setSpeedSingle() {
 }
 
 function cancelSim() {
-    console.log(simManager.simulation.initialConditions.nightCargoProbs.toString());
-    console.log(simManager.simulation.initialConditions.nightPatrolProbs.toString());
-    console.log(simManager.simulation.initialConditions.nightPirateProbs.toString());
+    simManager.cancelSim();
+}
 
+function resetReplayToStart() {
+    simManager.resetToStart();
 }
 
 function DNtoggle(){
