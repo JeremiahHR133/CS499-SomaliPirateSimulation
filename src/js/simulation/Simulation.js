@@ -184,9 +184,6 @@ class Simulation {
         newFrame.tick(this.simStatsData, [0, this.initialConditions.simDimensions[1]], [0, this.initialConditions.simDimensions[0]]);
         // (4)
         this.frames.push(newFrame);
-        newFrame.pirateList.forEach(pirate => {
-            console.log(pirate.xPos + ", " + pirate.yPos);
-        });
     }
 
     isDayTime() {
