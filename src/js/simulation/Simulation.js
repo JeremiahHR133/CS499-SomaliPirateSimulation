@@ -115,64 +115,10 @@ class InitSimData {
     }
 }
 
-class SimStatsData {
-    constructor() {
-        // Entering and exiting
-        this.cargosEntered = 0;
-        this.cargosExited = 0;
-        this.patrolsEntered = 0;
-        this.patrolsExited = 0;
-        this.piratesEntered = 0;
-        this.piratesExited = 0;
-        this.capturesExited = 0;
-        // Action recording
-        this.piratesDefeated = 0;
-        this.cargosCaptured = 0; 
-        this.capturesRescued = 0;
-        this.evadesNotCaptured = 0;
-        this.evadesCaptured = 0;
-    }
-
-    importFromJSON(obj){
-        this.cargosEntered = obj.cargosEntered;
-        this.cargosExited = obj.cargosExited;
-        this.partrolsEntered = obj.partrolsEntered;
-        this.patrolsExited = obj.patrolsExited;
-        this.piratesEntered = obj.piratesEntered;
-        this.piratesExited = obj.piratesExited;
-        this.capturesExited = obj.capturesExited;
-        // Action recording
-        this.piratesDefeated = obj.piratesDefeated;
-        this.cargosCaptured = obj.cargosCaptured; 
-        this.capturesRescued = obj.capturesRescued;
-        this.evadesNotCaptured = obj.evadesNotCaptured;
-        this.evadesCaptured = obj.evadesCaptured;
-    }
-
-    toString(indent) {
-        let ret = indent + "=== Sim Stats Data ===\n";
-        ret += indent + "Enter and Exit: \n";
-        ret += indent + "   " + "Cargos Entered   : " + this.cargosEntered + "\n";
-        ret += indent + "   " + "Cargos Exited    : " + this.cargosExited + "\n";
-        ret += indent + "   " + "Patrols Entered  : " + this.patrolsEntered + "\n";
-        ret += indent + "   " + "Patrols Exited   : " + this.patrolsExited + "\n";
-        ret += indent + "   " + "Pirates Entered  : " + this.piratesEntered + "\n";
-        ret += indent + "   " + "Pirates Exited   : " + this.piratesExited + "\n";
-        ret += indent + "   " + "Captures Exited  : " + this.capturesExited + "\n";
-        ret += indent + "Actions: \n";
-        ret += indent + "   " + "Pirates Defeated : " + this.piratesDefeated + "\n";
-        ret += indent + "   " + "Cargos Captured  : " + this.cargosCaptured + "\n";
-        ret += indent + "   " + "Captures Rescued : " + this.capturesRescued + "\n";
-        ret += indent + "   " + "Evades Not Cap.  : " + this.evadesNotCaptured + "\n";
-        ret += indent + "   " + "Evades Captured  : " + this.evadesCaptured + "\n";
-        return ret;
-    }
-}
 
 class Simulation {
     constructor() {
         this.initialConditions = new InitSimData();
-        this.simStatsData = new SimStatsData();
         this.currentSimTime = 0;
         this.currentFrameNumber = 0;
         this.simOver = false;
@@ -193,7 +139,6 @@ class Simulation {
         });
 
         this.initialConditions.importFromJSON(obj.initialConditions);
-        this.simStatsData.importFromJSON(obj.simStatsData);
     }
 
     // Flow of tick() function should be:
@@ -223,7 +168,7 @@ class Simulation {
             this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.patrolSpawn, this.initialConditions.nightPatrolProbs);
         }
         // (3)
-        newFrame.tick(this.simStatsData, [0, this.initialConditions.simDimensions[1]], [0, this.initialConditions.simDimensions[0]]);
+        newFrame.tick([0, this.initialConditions.simDimensions[1]], [0, this.initialConditions.simDimensions[0]]);
         // (4)
         this.frames.push(newFrame);
 
@@ -287,15 +232,15 @@ class Simulation {
                 const cell = cellList[i];
                 if (cell.probability + sum >= rand) {
                     if (shipType == "Cargo") {
-                        this.simStatsData.cargosEntered += 1;
+                        frame.simStatsData.cargosEntered += 1;
                         frame.addEntity(new CargoShip(0 - ShipMoveDirections.Cargo[0], index));
                     }
                     else if (shipType == "Patrol") {
-                        this.simStatsData.patrolsEntered += 1;
+                        frame.simStatsData.patrolsEntered += 1;
                         frame.addEntity(new PatrolShip(this.initialConditions.simDimensions[1] - 1 - ShipMoveDirections.Patrol[0], index));
                     }
                     else if (shipType == "Pirate") {
-                        this.simStatsData.piratesEntered += 1;
+                        frame.simStatsData.piratesEntered += 1;
                         frame.addEntity(new PirateShip(index, this.initialConditions.simDimensions[0] - 1 - ShipMoveDirections.Pirate[1]));
                     }
                     return;
