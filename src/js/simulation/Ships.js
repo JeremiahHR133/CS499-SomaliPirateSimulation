@@ -73,7 +73,7 @@ class Ship {
     } 
 
     inMapRange(xRange, yRange) {
-        return !(this.xPos < xRange[0] || this.xPos > xRange[1] || this.yPos < yRange[0] || this.yPos > yRange[1]);
+        return !(this.xPos < xRange[0] || this.xPos >= xRange[1] || this.yPos < yRange[0] || this.yPos >= yRange[1]);
     }
 
     // e.g. If a ship is in the same 4x4 grid but not in the same 3x3 grid, then this function returns true
@@ -122,7 +122,7 @@ class CargoShip extends Ship {
                     return;
                 }
             }
-            if (this.inRangeStrict(pirate, 4)) {
+            if (this.inRangeStrict(pirate, 4) && !pirate.hasCapture) {
                 // From the requirements it looks like we can only evade one pirate in a tick
                 // so we break out of this loop after evading a pirate
                 this.xPos = tempX;

@@ -1,3 +1,57 @@
+class SimStatsData {
+    constructor() {
+        // Entering and exiting
+        this.cargosEntered = 0;
+        this.cargosExited = 0;
+        this.patrolsEntered = 0;
+        this.patrolsExited = 0;
+        this.piratesEntered = 0;
+        this.piratesExited = 0;
+        this.capturesExited = 0;
+        // Action recording
+        this.piratesDefeated = 0;
+        this.cargosCaptured = 0; 
+        this.capturesRescued = 0;
+        this.evadesNotCaptured = 0;
+        this.evadesCaptured = 0;
+    }
+
+    importFromJSON(obj){
+        this.cargosEntered = obj.cargosEntered;
+        this.cargosExited = obj.cargosExited;
+        this.patrolsEntered = obj.patrolsEntered;
+        this.patrolsExited = obj.patrolsExited;
+        this.piratesEntered = obj.piratesEntered;
+        this.piratesExited = obj.piratesExited;
+        this.capturesExited = obj.capturesExited;
+        // Action recording
+        this.piratesDefeated = obj.piratesDefeated;
+        this.cargosCaptured = obj.cargosCaptured; 
+        this.capturesRescued = obj.capturesRescued;
+        this.evadesNotCaptured = obj.evadesNotCaptured;
+        this.evadesCaptured = obj.evadesCaptured;
+    }
+
+    toString(indent) {
+        let ret = indent + "=== Sim Stats Data ===\n";
+        ret += indent + "Enter and Exit: \n";
+        ret += indent + "   " + "Cargos Entered   : " + this.cargosEntered + "\n";
+        ret += indent + "   " + "Cargos Exited    : " + this.cargosExited + "\n";
+        ret += indent + "   " + "Patrols Entered  : " + this.patrolsEntered + "\n";
+        ret += indent + "   " + "Patrols Exited   : " + this.patrolsExited + "\n";
+        ret += indent + "   " + "Pirates Entered  : " + this.piratesEntered + "\n";
+        ret += indent + "   " + "Pirates Exited   : " + this.piratesExited + "\n";
+        ret += indent + "   " + "Captures Exited  : " + this.capturesExited + "\n";
+        ret += indent + "Actions: \n";
+        ret += indent + "   " + "Pirates Defeated : " + this.piratesDefeated + "\n";
+        ret += indent + "   " + "Cargos Captured  : " + this.cargosCaptured + "\n";
+        ret += indent + "   " + "Captures Rescued : " + this.capturesRescued + "\n";
+        ret += indent + "   " + "Evades Not Cap.  : " + this.evadesNotCaptured + "\n";
+        ret += indent + "   " + "Evades Captured  : " + this.evadesCaptured + "\n";
+        return ret;
+    }
+}
+
 class Frame {
     // Coppy constructor of sorts
     constructor(frameTime, isDayFrame, oldFrame) {
@@ -7,8 +61,11 @@ class Frame {
         this.patrolList = [];
         this.pirateList = [];
         this.captureList = [];
+        this.simStatsData = new SimStatsData();
         if (oldFrame instanceof Frame) {
             oldFrame.cloneEntityList(this);
+            oldFrame.cloneStatsData(this.simStatsData);
+            // console.log(this.simStatsData.toString("   "));
         }
     }
 
@@ -34,6 +91,8 @@ class Frame {
         obj.captureList.forEach(captureShip => {
             this.captureList.push(new CaptureShip(captureShip.xPos, captureShip.yPos, captureShip.UniqueID, captureShip.pirateUID));            
         });
+
+        this.simStatsData.importFromJSON(obj.simStatsData);
     }
 
     cloneEntityList(newFrame) {
@@ -49,6 +108,22 @@ class Frame {
         this.captureList.forEach(ship => {
             newFrame.captureList.push(ship.clone());
         });
+    }
+
+    cloneStatsData(newData) {
+        newData.cargosEntered  = this.simStatsData.cargosEntered;
+        newData.cargosExited   = this.simStatsData.cargosExited;
+        newData.patrolsEntered = this.simStatsData.patrolsEntered;
+        newData.patrolsExited  = this.simStatsData.patrolsExited;
+        newData.piratesEntered = this.simStatsData.piratesEntered;
+        newData.piratesExited  = this.simStatsData.piratesExited;
+        newData.capturesExited = this.simStatsData.capturesExited;
+        
+        newData.piratesDefeated   = this.simStatsData.piratesDefeated;
+        newData.cargosCaptured    = this.simStatsData.cargosCaptured; 
+        newData.capturesRescued   = this.simStatsData.capturesRescued;
+        newData.evadesNotCaptured = this.simStatsData.evadesNotCaptured;
+        newData.evadesCaptured    = this.simStatsData.evadesCaptured;
     }
 
     removeEntity(ent) {
@@ -139,7 +214,7 @@ class Frame {
         return ret;
     }
 
-    tick(simStats, xBounds, yBounds) {
+    tick(xBounds, yBounds) {
         // Move all entities
         this.cargoList.forEach(element => {
             element.move();
@@ -154,22 +229,22 @@ class Frame {
             element.move();
         });
 
-        this.recordExitStatistics(simStats, xBounds, yBounds);
+        this.recordExitStatistics(this.simStatsData, xBounds, yBounds);
         // Remove the ones that 'exited' the simulation
         this.pruneEntitiesOutsideRange(xBounds, yBounds);
 
         // Perform all entities actions
         this.patrolList.forEach(element => {
-            element.doAction(this, simStats);
+            element.doAction(this, this.simStatsData);
         });
         this.pirateList.forEach(element => {
-            element.doAction(this, simStats);
+            element.doAction(this, this.simStatsData);
         });
         this.cargoList.forEach(element => {
-            element.doAction(this, xBounds, yBounds, simStats);
+            element.doAction(this, xBounds, yBounds, this.simStatsData);
         });
         this.captureList.forEach(element => {
-            element.doAction(this, simStats);
+            element.doAction(this, this.simStatsData);
         });
     }
 }
