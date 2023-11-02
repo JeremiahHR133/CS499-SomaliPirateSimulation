@@ -77,19 +77,32 @@ class InitSimData {
         this.patrolSpawn = obj.patrolSpawn;
         this.pirateSpawn = obj.pirateSpawn;
 
-        for (let i = 0; i < this.cargoProbs.length; i++) {
-            const probabilityCell = this.cargoProbs[i];
-            probabilityCell.importFromJSON(obj.cargoProbs[i]);
+        // Day probs
+        for (let i = 0; i < this.dayCargoProbs.length; i++) {
+            const probabilityCell = this.dayCargoProbs[i];
+            probabilityCell.importFromJSON(obj.dayCargoProbs[i]);
+        }
+        for (let i = 0; i < this.dayPatrolProbs.length; i++) {
+            const probabilityCell = this.dayPatrolProbs[i];
+            probabilityCell.importFromJSON(obj.dayPatrolProbs[i]);
+        }
+        for (let i = 0; i < this.dayPirateProbs.length; i++) {
+            const probabilityCell = this.dayPirateProbs[i];
+            probabilityCell.importFromJSON(obj.dayPirateProbs[i]);
         }
 
-        for (let i = 0; i < this.patrolProbs.length; i++) {
-            const probabilityCell = this.patrolProbs[i];
-            probabilityCell.importFromJSON(obj.patrolProbs[i]);
+        // Night probs
+        for (let i = 0; i < this.nightCargoProbs.length; i++) {
+            const probabilityCell = this.nightCargoProbs[i];
+            probabilityCell.importFromJSON(obj.nightCargoProbs[i]);
         }
-
-        for (let i = 0; i < this.pirateProbs.length; i++) {
-            const probabilityCell = this.pirateProbs[i];
-            probabilityCell.importFromJSON(obj.pirateProbs[i]);
+        for (let i = 0; i < this.nightPatrolProbs.length; i++) {
+            const probabilityCell = this.nightPatrolProbs[i];
+            probabilityCell.importFromJSON(obj.nightPatrolProbs[i]);
+        }
+        for (let i = 0; i < this.nightPirateProbs.length; i++) {
+            const probabilityCell = this.nightPirateProbs[i];
+            probabilityCell.importFromJSON(obj.nightPirateProbs[i]);
         }
     }
 
