@@ -46,6 +46,8 @@ let gridLineThin;                   // Thin  grid line size after accounting for
 let simDrawWidth;                   // Based on the simDrawPercentage applied to the canvas width , used in converting between world and simulation coordinates
 let simDrawHeight;                  // Based on the simDrawPercentage applied to the canvas height, used in converting between world and simulation coordinates
 
+let probX = 0, probY = 0;
+
 function preload() {
     bgImage = loadImage("images/Map_Day.png");
     bgImageNight = loadImage("images/Map_Night.png");
@@ -96,6 +98,8 @@ function draw() {
     drawGridLines();
 
     drawBoatSprites();
+
+    image(cargoImageLow, probX, probY, 80 / imageScaleFactor, 80 / imageScaleFactor);
 }
 
 // Because customization is cool
@@ -249,6 +253,22 @@ function mouseDragged() {
     translateY += movedY;
 }
 
+// function worldXToSimX(worldX) {
+//     return Math.floor((worldX - ((canvasWidth - simDrawWidth) / 2)) / worldXRatio);
+// }
+
+// function worldYToSimY(worldY) {
+//     return Math.floor((worldY - ((canvasHeight - simDrawHeight) / 2)) / worldYRatio);
+// }
+
+function canvasXToSimX(canvasX) {
+    return Math.floor((((canvasX - translateX) / scaleFactor) - ((canvasWidth - simDrawWidth) / 2)) / worldYRatio);
+}
+
+function canvasYToSimY(canvasY) {
+    return Math.floor((((canvasY - translateY) / scaleFactor) - ((canvasHeight - simDrawHeight) / 2)) / worldYRatio);
+}
+
 function mouseClicked() {
     if (mouseButton === LEFT) {
         // If the mouse was clicked on the canvas and we are seeing the full grid resolution
@@ -260,8 +280,8 @@ function mouseClicked() {
             document.getElementsByName("nightColumnNumber").values().next().value.innerHTML = "";
             var checkedValue = simManager.simulation.initialConditions.considerDayNight;
             if(checkedValue){
-                document.getElementsByName("nightRowNumber").values().next().value.innerHTML = Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor);
-                document.getElementsByName("nightColumnNumber").values().next().value.innerHTML = Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor);
+                document.getElementsByName("nightRowNumber").values().next().value.innerHTML = canvasYToSimY(mouseY);
+                document.getElementsByName("nightColumnNumber").values().next().value.innerHTML = canvasXToSimX(mouseX);
                 if(document.getElementsByName("nightColumnNumber").values().next().value.innerHTML == 0 && document.getElementsByName("nightRowNumber").values().next().value.innerHTML == 99){
                     const myNightNode = document.getElementById("nightCornerBoatSelect");
                     while (myNightNode.firstChild) {
@@ -295,8 +315,8 @@ function mouseClicked() {
                     document.getElementById("nightCornerBoatSelect").appendChild(child2nightnew);
                 }
             }
-            document.getElementsByName("dayRowNumber").values().next().value.innerHTML = Math.floor(((mouseY - translateY) / worldYRatio) / scaleFactor);
-            document.getElementsByName("dayColumnNumber").values().next().value.innerHTML = Math.floor(((mouseX - translateX) / worldXRatio) / scaleFactor);
+            document.getElementsByName("dayRowNumber").values().next().value.innerHTML = canvasYToSimY(mouseY);
+            document.getElementsByName("dayColumnNumber").values().next().value.innerHTML = canvasXToSimX(mouseX);
             if(document.getElementsByName("dayColumnNumber").values().next().value.innerHTML == 0 && document.getElementsByName("dayRowNumber").values().next().value.innerHTML == 99){
                 const myDayNode = document.getElementById("dayCornerBoatSelect");
                 while (myDayNode.firstChild) {
