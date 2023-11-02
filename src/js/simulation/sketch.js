@@ -31,6 +31,9 @@ let defaultImageSize;
 let gridLineThick;
 let gridLineThin;
 let loadingFile = false;
+let simDrawWidth;
+let simDrawHeight;
+let simMapPercentage = 0.9;
 let lowResImages = false;
 
 function preload() {
@@ -54,6 +57,9 @@ function setup() {
     canvasWidth = screen.width;
     canvasHeight = screen.width / 4;
 
+    simDrawWidth = canvasWidth * simMapPercentage;
+    simDrawHeight = canvasHeight * simMapPercentage;
+
     // Give elements hard coded sizes that are still relative to the screen size
     defaultImageSize = 80 * (screen.width / 1920);
     gridLineThick = 1.0 * (screen.width / 1920);
@@ -64,8 +70,8 @@ function setup() {
 
     simManager = new SimManager();
 
-    worldXRatio = canvasWidth / simManager.simulation.initialConditions.simDimensions[1];
-    worldYRatio = canvasHeight / simManager.simulation.initialConditions.simDimensions[0];
+    worldXRatio = simDrawWidth / simManager.simulation.initialConditions.simDimensions[1];
+    worldYRatio = simDrawHeight / simManager.simulation.initialConditions.simDimensions[0];
 }
 
 function draw() {
@@ -88,35 +94,43 @@ function draw() {
     drawBoatSprites();
 }
 
+function simXToWorldX(simX) {
+    return simX * worldXRatio + (worldXRatio / 2) + ((canvasWidth - simDrawWidth) / 2);
+}
+
+function simYToWorldY(simY) {
+    return simY * worldYRatio + (worldYRatio / 2) + ((canvasHeight - simDrawHeight) / 2);
+}
+
 function drawBoatSprites() {
     // Draw all the entities
     imageMode(CENTER);
     let frame = simManager.simulation.getCurrentFrame();
     frame.cargoList.forEach(cargo => {
         image(lowResImages ? cargoImageLow : cargoImage,
-            cargo.xPos * worldXRatio + (worldXRatio / 2),
-            cargo.yPos * worldYRatio + (worldYRatio / 2), 
+            simXToWorldX(cargo.xPos),
+            simYToWorldY(cargo.yPos),
             defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
     frame.patrolList.forEach(patrol => {
         image(lowResImages ? patrolImageLow : patrolImage,
-            patrol.xPos * worldXRatio + (worldXRatio / 2),
-            patrol.yPos * worldYRatio + (worldYRatio / 2),
+            simXToWorldX(patrol.xPos),
+            simYToWorldY(patrol.yPos),
             defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
     frame.pirateList.forEach(pirate => {
         if (!pirate.hasCapture)
         {
             image(lowResImages ? pirateImageLow : pirateImage,
-                pirate.xPos * worldXRatio + (worldXRatio / 2),
-                pirate.yPos * worldYRatio + (worldYRatio / 2),
+                simXToWorldX(pirate.xPos),
+                simYToWorldY(pirate.yPos),
                 defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
         }
     });
     frame.captureList.forEach(capture => {
         image(lowResImages ? captureImageLow : captureImage,
-            capture.xPos * worldXRatio + (worldXRatio / 2),
-            capture.yPos * worldYRatio + (worldYRatio / 2),
+            simXToWorldX(capture.xPos),
+            simYToWorldY(capture.yPos),
             defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
 }
@@ -129,13 +143,13 @@ function drawGridLines() {
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i += 1) {
             thickness = (i % 4 == 0 ? gridLineThick : gridLineThin) / Math.pow(scaleFactor, gridLineScaleFactor);
             strokeWeight(thickness);
-            line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
+            line(0 + ((canvasWidth - simDrawWidth) / 2), i * worldYRatio + ((canvasHeight - simDrawHeight) / 2), (simManager.simulation.initialConditions.simDimensions[1] * worldXRatio) + ((canvasWidth - simDrawWidth) / 2), i * worldYRatio + ((canvasHeight - simDrawHeight) / 2));
         }
         // Draw vertical lines
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; i += 1) {
             thickness = (i % 4 == 0 ? gridLineThick : gridLineThin) / Math.pow(scaleFactor, gridLineScaleFactor);
             strokeWeight(thickness);
-            line(i * worldXRatio, 0, i * worldXRatio, simManager.simulation.initialConditions.simDimensions[0] * worldYRatio);
+            line(i * worldXRatio + ((canvasWidth - simDrawWidth) / 2), 0 + ((canvasHeight - simDrawHeight) / 2), i * worldXRatio + ((canvasWidth - simDrawWidth) / 2), (simManager.simulation.initialConditions.simDimensions[0] * worldYRatio) + ((canvasHeight - simDrawHeight) / 2));
         }
     }
     else {
@@ -143,11 +157,11 @@ function drawGridLines() {
         strokeWeight(thickness);
         // Draw the horizontal lines
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i += 4) {
-            line(0, i * worldYRatio, simManager.simulation.initialConditions.simDimensions[1] * worldXRatio, i * worldYRatio);
+            line(0 + ((canvasWidth - simDrawWidth) / 2), i * worldYRatio + ((canvasHeight - simDrawHeight) / 2), (simManager.simulation.initialConditions.simDimensions[1] * worldXRatio) + ((canvasWidth - simDrawWidth) / 2), i * worldYRatio + ((canvasHeight - simDrawHeight) / 2));
         }
         // Draw vertical lines
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; i += 4) {
-            line(i * worldXRatio, 0, i * worldXRatio, simManager.simulation.initialConditions.simDimensions[0] * worldYRatio);
+            line(i * worldXRatio + ((canvasWidth - simDrawWidth) / 2), 0 + ((canvasHeight - simDrawHeight) / 2), i * worldXRatio + ((canvasWidth - simDrawWidth) / 2), (simManager.simulation.initialConditions.simDimensions[0] * worldYRatio) + ((canvasHeight - simDrawHeight) / 2));
         }
     }
 }

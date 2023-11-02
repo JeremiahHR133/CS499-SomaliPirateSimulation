@@ -279,11 +279,11 @@ class Simulation {
                     }
                     else if (shipType == "Patrol") {
                         this.simStatsData.patrolsEntered += 1;
-                        frame.addEntity(new PatrolShip(this.initialConditions.simDimensions[1] - ShipMoveDirections.Patrol[0], index));
+                        frame.addEntity(new PatrolShip(this.initialConditions.simDimensions[1] - 1 - ShipMoveDirections.Patrol[0], index));
                     }
                     else if (shipType == "Pirate") {
                         this.simStatsData.piratesEntered += 1;
-                        frame.addEntity(new PirateShip(index, this.initialConditions.simDimensions[0] - ShipMoveDirections.Pirate[1]));
+                        frame.addEntity(new PirateShip(index, this.initialConditions.simDimensions[0] - 1 - ShipMoveDirections.Pirate[1]));
                     }
                     return;
                 }
