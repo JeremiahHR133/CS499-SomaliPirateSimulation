@@ -46,8 +46,6 @@ let gridLineThin;                   // Thin  grid line size after accounting for
 let simDrawWidth;                   // Based on the simDrawPercentage applied to the canvas width , used in converting between world and simulation coordinates
 let simDrawHeight;                  // Based on the simDrawPercentage applied to the canvas height, used in converting between world and simulation coordinates
 
-let probX = 0, probY = 0;
-
 function preload() {
     bgImage = loadImage("images/Map_Day.png");
     bgImageNight = loadImage("images/Map_Night.png");
@@ -98,8 +96,6 @@ function draw() {
     drawGridLines();
 
     drawBoatSprites();
-
-    image(cargoImageLow, probX, probY, 80 / imageScaleFactor, 80 / imageScaleFactor);
 }
 
 // Because customization is cool
