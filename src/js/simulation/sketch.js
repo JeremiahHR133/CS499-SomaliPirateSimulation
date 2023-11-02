@@ -1,13 +1,22 @@
 // Simulation object instance
 let simManager;
 
-// Images
+// Map Images
 let bgImage;
 let bgImageNight;
+let legendImage;
+
+// Boat Images
 let cargoImage;
 let patrolImage;
 let pirateImage;
 let captureImage;
+
+// Boat Images Low Res
+let cargoImageLow;
+let patrolImageLow;
+let pirateImageLow;
+let captureImageLow;
 
 // Graphics variables
 let scaleFactor = 1;
@@ -22,14 +31,22 @@ let defaultImageSize;
 let gridLineThick;
 let gridLineThin;
 let loadingFile = false;
+let lowResImages = false;
 
 function preload() {
-    bgImage = loadImage("images/GulfOfAdenCorrectAspectRatio.png");
-    bgImageNight = loadImage("images/GulfOfAdenCorrectAspectRatioNightTime.png");
-    cargoImage = loadImage("images/cargo.png");
-    patrolImage = loadImage("images/warship2.png");
-    pirateImage = loadImage("images/pirate.png");
-    captureImage = loadImage("images/capture.png");
+    bgImage = loadImage("images/Map_Day.png");
+    bgImageNight = loadImage("images/Map_Night.png");
+    legendImage = loadImage("images/Legend.png");
+
+    cargoImage = loadImage("images/cargo_ship.png");
+    patrolImage = loadImage("images/patrol_ship.png");
+    pirateImage = loadImage("images/pirate_ship.png");
+    captureImage = loadImage("images/capture_ship.png");
+
+    cargoImageLow = loadImage("images/cargo_ship_simple.png");
+    patrolImageLow = loadImage("images/patrol_ship_simple.png");
+    pirateImageLow = loadImage("images/pirate_ship_simple.png");
+    captureImageLow = loadImage("images/capture_ship_simple.png");
 }
 
 function setup() {
@@ -38,7 +55,7 @@ function setup() {
     canvasHeight = screen.width / 4;
 
     // Give elements hard coded sizes that are still relative to the screen size
-    defaultImageSize = 40 * (screen.width / 1920);
+    defaultImageSize = 80 * (screen.width / 1920);
     gridLineThick = 1.0 * (screen.width / 1920);
     gridLineThin = 0.4 * (screen.width / 1920);
 
@@ -76,25 +93,28 @@ function drawBoatSprites() {
     imageMode(CENTER);
     let frame = simManager.simulation.getCurrentFrame();
     frame.cargoList.forEach(cargo => {
-        image(cargoImage,
+        image(lowResImages ? cargoImageLow : cargoImage,
             cargo.xPos * worldXRatio + (worldXRatio / 2),
             cargo.yPos * worldYRatio + (worldYRatio / 2), 
             defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
     frame.patrolList.forEach(patrol => {
-        image(patrolImage,
+        image(lowResImages ? patrolImageLow : patrolImage,
             patrol.xPos * worldXRatio + (worldXRatio / 2),
             patrol.yPos * worldYRatio + (worldYRatio / 2),
             defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
     });
     frame.pirateList.forEach(pirate => {
-        image(pirateImage,
-            pirate.xPos * worldXRatio + (worldXRatio / 2),
-            pirate.yPos * worldYRatio + (worldYRatio / 2),
-            defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
+        if (!pirate.hasCapture)
+        {
+            image(lowResImages ? pirateImageLow : pirateImage,
+                pirate.xPos * worldXRatio + (worldXRatio / 2),
+                pirate.yPos * worldYRatio + (worldYRatio / 2),
+                defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
+        }
     });
     frame.captureList.forEach(capture => {
-        image(captureImage,
+        image(lowResImages ? captureImageLow : captureImage,
             capture.xPos * worldXRatio + (worldXRatio / 2),
             capture.yPos * worldYRatio + (worldYRatio / 2),
             defaultImageSize / imageScaleFactor, defaultImageSize / imageScaleFactor);
