@@ -1,6 +1,9 @@
 // Simulation object instance
 let simManager;
 
+// File management
+let loadingFile = false;
+
 // Map Images
 let bgImage;
 let bgImageNight;
@@ -12,29 +15,36 @@ let patrolImage;
 let pirateImage;
 let captureImage;
 
-// Boat Images Low Res
+// Boat Images Low-res
 let cargoImageLow;
 let patrolImageLow;
 let pirateImageLow;
 let captureImageLow;
 
-// Graphics variables
-let scaleFactor = 1;
-let imageScaleFactor = scaleFactor;
-let translateX = 0, translateY = 0;
-let scaleToShowGrid = 3.5;
-let gridLineScaleFactor = 0.5;
-let worldXRatio, worldYRatio;
-let canvasWidth, canvasHeight;
-let mouseOnCanvas = false;
-let defaultImageSize;
-let gridLineThick;
-let gridLineThin;
-let loadingFile = false;
-let simDrawWidth;
-let simDrawHeight;
-let simMapPercentage = 0.9;
-let lowResImages = false;
+// Graphics variables that can be customized
+let scaleToShowGrid = 3.5;     // The scale factor at which we show the full grid res
+let gridLineScaleFactor = 0.5; // The exponet applied to scale factor to reduce grid line scaling when zooming. 1 = no effect (thin lines on zoom)
+let relImageSize = 80;         // The size of the image relative to a 1080p screen
+let relGridLineThick = 1.0;    // The thinkness of the thick grid line on a 1080p screen
+let relGridLineThin = 0.4;     // The thinkness of the thin  grid line on a 1080p screen
+let simMapPercentage = 0.9;    // The percentage of the map to be used for the grid drawing
+let lowResImages = false;      // Use high or low resolution images
+let showLegend = false;        // Show the map legend
+
+// Graphics variables that cannot be customized
+// The initial values for these should not be changed either
+// Variables that do not have an initial condition are dependent on other variables that could be configurable
+let scaleFactor = 1;                // Inital zoom level
+let translateX = 0, translateY = 0; // Initial translation
+let mouseOnCanvas = false;          // True when the mouse is on the canvas, false otherwise. Managed by js event functions later in this file
+let imageScaleFactor = scaleFactor; // Scale factor to draw the images. Separate from scaleFactor because images have a minimum size, thus they stop scaling at a point
+let worldXRatio, worldYRatio;       // Ratio used for converting between world and simulation coordinates
+let canvasWidth, canvasHeight;      // Variables to store the width and height of the canvas. Currently they are set based on the screen width and height
+let defaultImageSize;               // Image size after accounting for screen resolution
+let gridLineThick;                  // Thick grid line size after accounting for screen resolution
+let gridLineThin;                   // Thin  grid line size after accounting for screen resolution
+let simDrawWidth;                   // Based on the simDrawPercentage applied to the canvas width , used in converting between world and simulation coordinates
+let simDrawHeight;                  // Based on the simDrawPercentage applied to the canvas height, used in converting between world and simulation coordinates
 
 function preload() {
     bgImage = loadImage("images/Map_Day.png");
@@ -57,21 +67,10 @@ function setup() {
     canvasWidth = screen.width;
     canvasHeight = screen.width / 4;
 
-    simDrawWidth = canvasWidth * simMapPercentage;
-    simDrawHeight = canvasHeight * simMapPercentage;
-
-    // Give elements hard coded sizes that are still relative to the screen size
-    defaultImageSize = 80 * (screen.width / 1920);
-    gridLineThick = 1.0 * (screen.width / 1920);
-    gridLineThin = 0.4 * (screen.width / 1920);
-
     createCanvas(canvasWidth, canvasHeight, document.getElementById("P5-DRAWING-CANVAS"));
     background(0, 0, 0);
 
     simManager = new SimManager();
-
-    worldXRatio = simDrawWidth / simManager.simulation.initialConditions.simDimensions[1];
-    worldYRatio = simDrawHeight / simManager.simulation.initialConditions.simDimensions[0];
 }
 
 function draw() {
@@ -79,6 +78,9 @@ function draw() {
         return;
     }
     simManager.tick();
+
+    // Update graphics variables that may have been changed by the user
+    updateGraphicsVariables();
 
     // Manage zooming relative to the mouse and panning
     lockToViewport();
@@ -88,10 +90,27 @@ function draw() {
     // Draw the map
     imageMode(CORNER);
     image(simManager.isDayTime() ? bgImage : bgImageNight, 0, 0, canvasWidth, canvasHeight);
+    if (showLegend)
+        image(legendImage, 0, canvasHeight - 24);
 
     drawGridLines();
 
     drawBoatSprites();
+}
+
+// Because customization is cool
+// Will update the depended graphics vars based on the ones set by the user
+function updateGraphicsVariables() {
+    simDrawWidth = canvasWidth * simMapPercentage;
+    simDrawHeight = canvasHeight * simMapPercentage;
+
+    // Give elements hard coded sizes that are still relative to the screen size
+    defaultImageSize = relImageSize * (screen.width / 1920);
+    gridLineThick = relGridLineThick * (screen.width / 1920);
+    gridLineThin = relGridLineThin * (screen.width / 1920);
+
+    worldXRatio = simDrawWidth / simManager.simulation.initialConditions.simDimensions[1];
+    worldYRatio = simDrawHeight / simManager.simulation.initialConditions.simDimensions[0];
 }
 
 function simXToWorldX(simX) {
@@ -153,7 +172,7 @@ function drawGridLines() {
         }
     }
     else {
-        thickness = gridLineThick / Math.sqrt(scaleFactor, gridLineScaleFactor);
+        thickness = gridLineThick / Math.pow(scaleFactor, gridLineScaleFactor);
         strokeWeight(thickness);
         // Draw the horizontal lines
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[0] + 1; i += 4) {
