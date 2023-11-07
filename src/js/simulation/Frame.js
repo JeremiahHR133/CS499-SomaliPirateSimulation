@@ -71,6 +71,7 @@ class Frame {
 
     importFromJSON(obj){
         this.frameTime = obj.frameTime;
+        this.isDayFrame = obj.isDayFrame;
 
         this.cargoList = [];
         obj.cargoList.forEach(cargoShip => {
@@ -91,6 +92,12 @@ class Frame {
         obj.captureList.forEach(captureShip => {
             this.captureList.push(new CaptureShip(captureShip.xPos, captureShip.yPos, captureShip.UniqueID, captureShip.pirateUID));            
         });
+
+        //
+        //Talk with Jere
+        //What needs to be done about old frame? Import works perfectly fine without it
+        //
+
 
         this.simStatsData.importFromJSON(obj.simStatsData);
     }

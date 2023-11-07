@@ -346,8 +346,6 @@ function mouseClicked() {
                 document.getElementById("dayCornerBoatSelect").appendChild(child1daynew);
                 document.getElementById("dayCornerBoatSelect").appendChild(child2daynew);
             }
-             
-            
         }
     }
 }
@@ -375,20 +373,55 @@ function downloadCurrentSim() {
 // Import Simulation
 // ------------------------
 
-const input = document.querySelector('input[type="file"]')
-input.addEventListener('change', function(e){
-    const reader = new FileReader()
-    reader.readAsText(input.files[0])
+function importAndStart() {
+    //currentSimTime is only 0 at the very beginning, so it can tell us if there has been a previously imported simulation
+    if(simManager.simulation.currentSimTime == 0){
+        console.log("importing new simulation...")
 
-    loadingFile = true;
-    //.onload just waits until the file is ready to run the next function
-    reader.onload = function() {
-        //
-        //const { singleStepMode, paused, baseFrametime, frametime, prevTime, simulation } = JSON.parse(reader.result);
-        simManager.importFromJSON(JSON.parse(reader.result));
-        loadingFile = false;
+        //Create a promise for two reasons:
+        //1.) Find a way to get startSim() to wait for the file to load
+        //2.) Handle incorrect file imports
+        let importPromise = new Promise((resolve, reject) => {
+            document.getElementById('importFile').click();
+
+            //Get the input element and wait for file selection
+            const input = document.querySelector('input[type="file"]')
+            input.addEventListener('change', function(e){
+                const reader = new FileReader()
+                reader.readAsText(input.files[0])
+
+                //The promise will either parse the file and resolve if correct file type
+                //  or reject if incorrect file type
+                if(input.files[0].type == 'application/json') {
+                    loadingFile = true;
+
+                    //.onload just waits until the file is ready to run the next function
+                    reader.onload = function() {
+                        //Read the JSON file and part the data into simManager
+                        simManager.importFromJSON(JSON.parse(reader.result));
+                        loadingFile = false;
+
+                        resolve("File successfully imported!");
+                    }
+                } else {
+                    reject("Invalid file type\nAcceptable File Type: .json");
+                }
+            })                    
+        })
+
+        //importPromise will wait to run until a resolve or reject has been established
+        importPromise.then((message) => {
+            console.log(message);
+            simManager.simulation.currentFrameNumber = 1;
+            startSim();     
+        }).catch((message) => {
+            alert("::ERROR:: " + message);
+        })
+    } else {
+        console.log("Resuming Sim...")
+        startSim();
     }
-})
+}
 
 // ------------------------
 // HTML interface functions
