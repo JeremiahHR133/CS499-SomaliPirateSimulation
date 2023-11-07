@@ -346,8 +346,6 @@ function mouseClicked() {
                 document.getElementById("dayCornerBoatSelect").appendChild(child1daynew);
                 document.getElementById("dayCornerBoatSelect").appendChild(child2daynew);
             }
-             
-            
         }
     }
 }
@@ -413,8 +411,9 @@ function importAndStart() {
 
         //importPromise will wait to run until a resolve or reject has been established
         importPromise.then((message) => {
-            startSim();
-            console.log(message);                   
+            console.log(message);
+            simManager.simulation.currentFrameNumber = 1;
+            startSim();     
         }).catch((message) => {
             alert("::ERROR:: " + message);
         })

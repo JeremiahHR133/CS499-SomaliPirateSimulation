@@ -71,7 +71,7 @@ class InitSimData {
         this.simTimeStep = obj.simTimeStep;      // Specified in minutes
         this.simDimensions = obj.simDimensions; // 100 rows by 400 columns 
         this.considerDayNight = obj.considerDayNight; // Specifies if individual day / night settings should be used
-
+        this.totalInputCellProb = obj.totalInputCellProb;
         // Default probabilities for spawn
         this.cargoSpawn = obj.cargoSpawn;
         this.patrolSpawn = obj.patrolSpawn;
@@ -105,6 +105,11 @@ class InitSimData {
             probabilityCell.importFromJSON(obj.nightPirateProbs[i]);
         }
     }
+
+    //
+    //Talk with Jere
+    //Do we need to reload the cell probability using ProbabilityCell() like in the constructor?
+    //
 
     toString(indent) {
         let ret = indent + "Sim run time      : " + this.simRunTime + " minutes\n";
@@ -190,8 +195,9 @@ class Simulation {
     }
 
     setReplayToStart() {
-        this.currentSimTime = 0;
-        this.currentFrameNumber = 0;
+        //Updated from 0 to 1 to determine if new sim or not
+        this.currentSimTime = 1;
+        this.currentFrameNumber = 1;
     }
 
     cancelSim() {

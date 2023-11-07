@@ -18,6 +18,7 @@
         <button id="b_start" onclick="importAndStart(); ">Start</button>
         <button id="b_pause" onclick="pauseSim()">Pause</button>
         <button id="b_cancel" onclick="cancelSim()">Cancel</button>
+        <button id="b_resetReplay" onclick="resetReplayToStart()">Reset Replay</button>
         <button id="b_singleStep" onclick="setSpeedSingle()">Single Step</button>
         <button id="b_reverse" onclick="setSpeedBackwards()">Reverse</button>
         <button id="b_oneTimes" onclick="setSpeed1x()">Base Speed</button>
@@ -25,6 +26,61 @@
         <button id="b_tenTimes" onclick="setSpeed10x()">10 Times</button>
         <button id="b_twentyTimes" onclick="setSpeed20x()">20 Times</button>
     </div>
+
+    <div id="counts">
+        Counts
+        <div>Cargos Entered: <div id="cargosEntered">0</div></div>
+        <div>Cargos Exited: <div id="cargosExited">0</div></div>
+        <div>Patrols Entered: <div id="patrolsEntered">0</div></div>
+        <div>Patrols Exited: <div id="patrolsExited">0</div></div>
+        <div>Pirates Entered: <div id="piratesEntered">0</div></div>
+        <div>Pirates Exited: <div id="piratesExited">0</div></div>
+        <div>Captures Exited: <div id="capturesExited">0</div></div>
+        <div>Pirates Defeated: <div id="piratesDefeated">0</div></div>
+        <div>Cargos Captured: <div id="cargosCaptured">0</div></div>
+        <div>Captures Resuced: <div id="capturesRescued">0</div></div>
+        <div>Evades Not Captured: <div id="evadesNotCaptured">0</div></div>
+        <div>Evades Captured: <div id="evadesCaptured">0</div></div>
+    </div>
+
+    <div id="daySettings">
+        Day                   
+        <div>Cargo Spawn Rate: <textarea name="cargoDay" id="cargoSpawnRateDay" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Patrol Spawn Rate: <textarea name="patrolDay" id="patrolSpawnRateDay" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Pirate Spawn Rate: <textarea name="pirateDay" id="pirateSpawnRateDay" cols="10" rows="1" style="resize:none"></textarea></div>
+        <br>
+        <div id="cellRow">Row: <textarea name="dayRowNumber" id="dayCellRow" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div id="cellColumn">Column: <textarea name="dayColumnNumber" id="dayCellColumn" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div>Percentage chance a boat will spawn in this cell: <textarea name="cellSpawnChance" id="dayCellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
+        <select id="dayCornerBoatSelect">
+            <option value="patrol">Patrol</option>
+            <option value="pirate">Pirate</option>
+        </select>
+        <div><button onclick="simManager.daySave()">Save Day Settings</button></div>
+    </div>
+
+    <div id="Normalsettings">
+        <div id="DNToggleContainer"><input id="DNToggle" type="checkbox" onclick="DNtoggle()">Day/Night Toggle</div><br>
+    </div>
+
+
+    <div id="nightSettings">
+        Night
+        <div>Cargo Spawn Rate: <textarea name="cargoNight" id="cargoSpawnRateNight" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Patrol Spawn Rate: <textarea name="patrolNight" id="patrolSpawnRateNight" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Pirate Spawn Rate: <textarea name="pirateNight" id="pirateSpawnRateNight" cols="10" rows="1" style="resize:none"></textarea></div>
+        <br>
+        <div id="cellRow">Row: <textarea name="nightRowNumber" id="nightCellRow" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div id="cellColumn">Column: <textarea name="nightColumnNumber" id="nightCellColumn" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div>Percentage chance a boat will spawn in this cell: <textarea name="cellSpawnChance" id="nightCellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
+        <select id="nightCornerBoatSelect">
+            <option value="patrol">Patrol</option>
+            <option value="pirate">Pirate</option>
+        </select>
+        <div><button onclick="simManager.nightSave()">Save Night Settings</button></div>
+    </div><br>
+
+
 
     <!-- All js scripts go here at the bottom of the <body> block-->
     <script src="/src/js/libraries/p5/lib/p5.js"></script>
@@ -34,6 +90,8 @@
     <script src="/src/js/simulation/Simulation.js"></script>
     <script src="/src/js/simulation/SimManager.js"></script>
     <script src="/src/js/simulation/sketch.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.3.0/math.min.js></script>
 
 </body>;
 </html>
