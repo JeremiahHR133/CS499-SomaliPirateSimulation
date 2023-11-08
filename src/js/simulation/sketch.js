@@ -345,8 +345,8 @@ function setSpeedBackwards() {
     simManager.setSpeedBackwards();
 }
 
-function startSim() {
-    simManager.start();
+function Play() {
+    simManager.play();
 }
 
 function pauseSim() {

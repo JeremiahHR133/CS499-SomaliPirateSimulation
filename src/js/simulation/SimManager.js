@@ -63,42 +63,40 @@ class SimManager {
 
     setSpeed1x() {
         this.frametime = this.baseFrametime;
-        this.replayBackwards = false;
     }
 
     setSpeed2x() {
         this.frametime = Math.floor(this.baseFrametime / 2);
-        this.replayBackwards = false;
     }
 
     setSpeed10x() {
         this.frametime = Math.floor(this.baseFrametime / 10);
-        this.replayBackwards = false;
     }
 
     setSpeed20x() {
         this.frametime = Math.floor(this.baseFrametime / 20);
-        this.replayBackwards = false;
     }
 
     setSpeedBackwards() {
         if (!this.simReplayMode) {
             return;
         }
-        this.replayBackwards = true;
+        if(this.replayBackwards){
+            this.replayBackwards = false;
+        }
+        else{
+            this.replayBackwards = true;
+        }
+        
     }
 
-    start() {
+    play() {
         this.paused = false;
         this.singleStepMode = false;
     }
 
     pause() {
         this.paused = true;
-    }
-
-    unpause() {
-        this.paused = false;
     }
 
     setSingleStepMode() {
