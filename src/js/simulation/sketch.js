@@ -379,7 +379,7 @@ function importAndStart() {
         console.log("importing new simulation...")
 
         //Create a promise for two reasons:
-        //1.) Find a way to get startSim() to wait for the file to load
+        //1.) Find a way to get Play() to wait for the file to load
         //2.) Handle incorrect file imports
         let importPromise = new Promise((resolve, reject) => {
             document.getElementById('importFile').click();
@@ -413,13 +413,13 @@ function importAndStart() {
         importPromise.then((message) => {
             console.log(message);
             simManager.simulation.currentFrameNumber = 1;
-            startSim();     
+            Play();     
         }).catch((message) => {
             alert("::ERROR:: " + message);
         })
     } else {
         console.log("Resuming Sim...")
-        startSim();
+        Play();
     }
 }
 
@@ -447,8 +447,8 @@ function setSpeedBackwards() {
     simManager.setSpeedBackwards();
 }
 
-function startSim() {
-    simManager.start();
+function Play() {
+    simManager.play();
 }
 
 function pauseSim() {
