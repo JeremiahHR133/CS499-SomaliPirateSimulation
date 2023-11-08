@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pirate Simulator</title>
     <link rel="stylesheet" href="/src/css/style.css">
+
+    <!--input was originally a hidden button in the body, but this works better-->
+    <input type="file" id="importFile" style="visibility: hidden;"/>    
 </head>
 <body>
     <div id="canvas">
@@ -12,7 +15,7 @@
     </div>
     
     <div id="buttons">
-        <button id="b_start" onclick="Play()">Play</button>
+        <button id="b_start" onclick="importAndStart(); ">Start</button>
         <button id="b_pause" onclick="pauseSim()">Pause</button>
         <button id="b_cancel" onclick="cancelSim()">Cancel</button>
         <button id="b_resetReplay" onclick="resetReplayToStart()">Reset Replay</button>
@@ -22,7 +25,6 @@
         <button id="b_twoTimes" onclick="setSpeed2x()">2 Times</button>
         <button id="b_tenTimes" onclick="setSpeed10x()">10 Times</button>
         <button id="b_twentyTimes" onclick="setSpeed20x()">20 Times</button>
-        <button id="b_downloadSim" onclick="downloadCurrentSim()">Download Simulation</button>
     </div>
 
     <div id="counts">
@@ -90,5 +92,6 @@
     <script src="/src/js/simulation/sketch.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src=https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.3.0/math.min.js></script>
-</body>
+
+</body>;
 </html>

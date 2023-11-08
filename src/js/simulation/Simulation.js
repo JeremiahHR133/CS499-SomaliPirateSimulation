@@ -71,27 +71,45 @@ class InitSimData {
         this.simTimeStep = obj.simTimeStep;      // Specified in minutes
         this.simDimensions = obj.simDimensions; // 100 rows by 400 columns 
         this.considerDayNight = obj.considerDayNight; // Specifies if individual day / night settings should be used
-
+        this.totalInputCellProb = obj.totalInputCellProb;
         // Default probabilities for spawn
         this.cargoSpawn = obj.cargoSpawn;
         this.patrolSpawn = obj.patrolSpawn;
         this.pirateSpawn = obj.pirateSpawn;
 
-        for (let i = 0; i < this.cargoProbs.length; i++) {
-            const probabilityCell = this.cargoProbs[i];
-            probabilityCell.importFromJSON(obj.cargoProbs[i]);
+        // Day probs
+        for (let i = 0; i < this.dayCargoProbs.length; i++) {
+            const probabilityCell = this.dayCargoProbs[i];
+            probabilityCell.importFromJSON(obj.dayCargoProbs[i]);
+        }
+        for (let i = 0; i < this.dayPatrolProbs.length; i++) {
+            const probabilityCell = this.dayPatrolProbs[i];
+            probabilityCell.importFromJSON(obj.dayPatrolProbs[i]);
+        }
+        for (let i = 0; i < this.dayPirateProbs.length; i++) {
+            const probabilityCell = this.dayPirateProbs[i];
+            probabilityCell.importFromJSON(obj.dayPirateProbs[i]);
         }
 
-        for (let i = 0; i < this.patrolProbs.length; i++) {
-            const probabilityCell = this.patrolProbs[i];
-            probabilityCell.importFromJSON(obj.patrolProbs[i]);
+        // Night probs
+        for (let i = 0; i < this.nightCargoProbs.length; i++) {
+            const probabilityCell = this.nightCargoProbs[i];
+            probabilityCell.importFromJSON(obj.nightCargoProbs[i]);
         }
-
-        for (let i = 0; i < this.pirateProbs.length; i++) {
-            const probabilityCell = this.pirateProbs[i];
-            probabilityCell.importFromJSON(obj.pirateProbs[i]);
+        for (let i = 0; i < this.nightPatrolProbs.length; i++) {
+            const probabilityCell = this.nightPatrolProbs[i];
+            probabilityCell.importFromJSON(obj.nightPatrolProbs[i]);
+        }
+        for (let i = 0; i < this.nightPirateProbs.length; i++) {
+            const probabilityCell = this.nightPirateProbs[i];
+            probabilityCell.importFromJSON(obj.nightPirateProbs[i]);
         }
     }
+
+    //
+    //Talk with Jere
+    //Do we need to reload the cell probability using ProbabilityCell() like in the constructor?
+    //
 
     toString(indent) {
         let ret = indent + "Sim run time      : " + this.simRunTime + " minutes\n";
@@ -102,64 +120,10 @@ class InitSimData {
     }
 }
 
-class SimStatsData {
-    constructor() {
-        // Entering and exiting
-        this.cargosEntered = 0;
-        this.cargosExited = 0;
-        this.patrolsEntered = 0;
-        this.patrolsExited = 0;
-        this.piratesEntered = 0;
-        this.piratesExited = 0;
-        this.capturesExited = 0;
-        // Action recording
-        this.piratesDefeated = 0;
-        this.cargosCaptured = 0; 
-        this.capturesRescued = 0;
-        this.evadesNotCaptured = 0;
-        this.evadesCaptured = 0;
-    }
-
-    importFromJSON(obj){
-        this.cargosEntered = obj.cargosEntered;
-        this.cargosExited = obj.cargosExited;
-        this.partrolsEntered = obj.partrolsEntered;
-        this.patrolsExited = obj.patrolsExited;
-        this.piratesEntered = obj.piratesEntered;
-        this.piratesExited = obj.piratesExited;
-        this.capturesExited = obj.capturesExited;
-        // Action recording
-        this.piratesDefeated = obj.piratesDefeated;
-        this.cargosCaptured = obj.cargosCaptured; 
-        this.capturesRescued = obj.capturesRescued;
-        this.evadesNotCaptured = obj.evadesNotCaptured;
-        this.evadesCaptured = obj.evadesCaptured;
-    }
-
-    toString(indent) {
-        let ret = indent + "=== Sim Stats Data ===\n";
-        ret += indent + "Enter and Exit: \n";
-        ret += indent + "   " + "Cargos Entered   : " + this.cargosEntered + "\n";
-        ret += indent + "   " + "Cargos Exited    : " + this.cargosExited + "\n";
-        ret += indent + "   " + "Patrols Entered  : " + this.patrolsEntered + "\n";
-        ret += indent + "   " + "Patrols Exited   : " + this.patrolsExited + "\n";
-        ret += indent + "   " + "Pirates Entered  : " + this.piratesEntered + "\n";
-        ret += indent + "   " + "Pirates Exited   : " + this.piratesExited + "\n";
-        ret += indent + "   " + "Captures Exited  : " + this.capturesExited + "\n";
-        ret += indent + "Actions: \n";
-        ret += indent + "   " + "Pirates Defeated : " + this.piratesDefeated + "\n";
-        ret += indent + "   " + "Cargos Captured  : " + this.cargosCaptured + "\n";
-        ret += indent + "   " + "Captures Rescued : " + this.capturesRescued + "\n";
-        ret += indent + "   " + "Evades Not Cap.  : " + this.evadesNotCaptured + "\n";
-        ret += indent + "   " + "Evades Captured  : " + this.evadesCaptured + "\n";
-        return ret;
-    }
-}
 
 class Simulation {
     constructor() {
         this.initialConditions = new InitSimData();
-        this.simStatsData = new SimStatsData();
         this.currentSimTime = 0;
         this.currentFrameNumber = 0;
         this.simOver = false;
@@ -180,7 +144,6 @@ class Simulation {
         });
 
         this.initialConditions.importFromJSON(obj.initialConditions);
-        this.simStatsData.importFromJSON(obj.simStatsData);
     }
 
     // Flow of tick() function should be:
@@ -210,7 +173,7 @@ class Simulation {
             this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.patrolSpawn, this.initialConditions.nightPatrolProbs);
         }
         // (3)
-        newFrame.tick(this.simStatsData, [0, this.initialConditions.simDimensions[1]], [0, this.initialConditions.simDimensions[0]]);
+        newFrame.tick([0, this.initialConditions.simDimensions[1]], [0, this.initialConditions.simDimensions[0]]);
         // (4)
         this.frames.push(newFrame);
 
@@ -232,8 +195,9 @@ class Simulation {
     }
 
     setReplayToStart() {
-        this.currentSimTime = 0;
-        this.currentFrameNumber = 0;
+        //Updated from 0 to 1 to determine if new sim or not
+        this.currentSimTime = 1;
+        this.currentFrameNumber = 1;
     }
 
     cancelSim() {
@@ -274,16 +238,16 @@ class Simulation {
                 const cell = cellList[i];
                 if (cell.probability + sum >= rand) {
                     if (shipType == "Cargo") {
-                        this.simStatsData.cargosEntered += 1;
+                        frame.simStatsData.cargosEntered += 1;
                         frame.addEntity(new CargoShip(0 - ShipMoveDirections.Cargo[0], index));
                     }
                     else if (shipType == "Patrol") {
-                        this.simStatsData.patrolsEntered += 1;
-                        frame.addEntity(new PatrolShip(this.initialConditions.simDimensions[1] - ShipMoveDirections.Patrol[0], index));
+                        frame.simStatsData.patrolsEntered += 1;
+                        frame.addEntity(new PatrolShip(this.initialConditions.simDimensions[1] - 1 - ShipMoveDirections.Patrol[0], index));
                     }
                     else if (shipType == "Pirate") {
-                        this.simStatsData.piratesEntered += 1;
-                        frame.addEntity(new PirateShip(index, this.initialConditions.simDimensions[0] - ShipMoveDirections.Pirate[1]));
+                        frame.simStatsData.piratesEntered += 1;
+                        frame.addEntity(new PirateShip(index, this.initialConditions.simDimensions[0] - 1 - ShipMoveDirections.Pirate[1]));
                     }
                     return;
                 }

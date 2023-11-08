@@ -73,7 +73,7 @@ class Ship {
     } 
 
     inMapRange(xRange, yRange) {
-        return !(this.xPos < xRange[0] || this.xPos > xRange[1] || this.yPos < yRange[0] || this.yPos > yRange[1]);
+        return !(this.xPos < xRange[0] || this.xPos >= xRange[1] || this.yPos < yRange[0] || this.yPos >= yRange[1]);
     }
 
     // e.g. If a ship is in the same 4x4 grid but not in the same 3x3 grid, then this function returns true

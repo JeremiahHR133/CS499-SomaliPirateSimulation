@@ -114,18 +114,19 @@ class SimManager {
     }
 
     updateCounts() {
-        document.getElementById("cargosEntered").innerText = this.simulation.simStatsData.cargosEntered;
-        document.getElementById("cargosExited").innerText = this.simulation.simStatsData.cargosExited;
-        document.getElementById("patrolsEntered").innerText = this.simulation.simStatsData.patrolsEntered;
-        document.getElementById("patrolsExited").innerText = this.simulation.simStatsData.patrolsExited;
-        document.getElementById("piratesEntered").innerText = this.simulation.simStatsData.piratesEntered;
-        document.getElementById("piratesExited").innerText = this.simulation.simStatsData.piratesExited;
-        document.getElementById("capturesExited").innerText = this.simulation.simStatsData.capturesExited;
-        document.getElementById("piratesDefeated").innerText = this.simulation.simStatsData.piratesDefeated;
-        document.getElementById("cargosCaptured").innerText = this.simulation.simStatsData.cargosCaptured;
-        document.getElementById("capturesRescued").innerText = this.simulation.simStatsData.capturesRescued;
-        document.getElementById("evadesNotCaptured").innerText = this.simulation.simStatsData.evadesNotCaptured;
-        document.getElementById("evadesCaptured").innerText = this.simulation.simStatsData.evadesCaptured;
+        let tempFrame = this.simulation.getCurrentFrame();
+        document.getElementById("cargosEntered").innerText     = tempFrame.simStatsData.cargosEntered;
+        document.getElementById("cargosExited").innerText      = tempFrame.simStatsData.cargosExited;
+        document.getElementById("patrolsEntered").innerText    = tempFrame.simStatsData.patrolsEntered;
+        document.getElementById("patrolsExited").innerText     = tempFrame.simStatsData.patrolsExited;
+        document.getElementById("piratesEntered").innerText    = tempFrame.simStatsData.piratesEntered;
+        document.getElementById("piratesExited").innerText     = tempFrame.simStatsData.piratesExited;
+        document.getElementById("capturesExited").innerText    = tempFrame.simStatsData.capturesExited;
+        document.getElementById("piratesDefeated").innerText   = tempFrame.simStatsData.piratesDefeated;
+        document.getElementById("cargosCaptured").innerText    = tempFrame.simStatsData.cargosCaptured;
+        document.getElementById("capturesRescued").innerText   = tempFrame.simStatsData.capturesRescued;
+        document.getElementById("evadesNotCaptured").innerText = tempFrame.simStatsData.evadesNotCaptured;
+        document.getElementById("evadesCaptured").innerText    = tempFrame.simStatsData.evadesCaptured;
     }
 
 
