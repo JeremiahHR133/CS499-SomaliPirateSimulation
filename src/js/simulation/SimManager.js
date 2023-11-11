@@ -163,14 +163,16 @@ class SimManager {
                         if(daycellspawn != null){
                             if(daycolumnnumber == 0 && dayrownumber != 99){
                                 //cargo
-                                let prevProb = this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability;
-                                let clampedInput = this.capNumber(this.safeToNumber(daycellspawn, prevProb), 0, 1);
-                                let updatedVals = this.capProbCell(clampedInput, this.simulation.initialConditions.dayCargoProbs, dayrownumber);
-                                this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability = updatedVals;
-                                if (prevProb != updatedVals)
-                                {
-                                    this.simulation.initialConditions.dayCargoProbs[dayrownumber].modifiedByUser = true;
-                                }
+                                // let prevProb = this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability;
+                                // let clampedInput = this.capNumber(this.safeToNumber(daycellspawn, prevProb), 0, 1);
+                                // let updatedVals = this.capProbCell(clampedInput, this.simulation.initialConditions.dayCargoProbs, dayrownumber);
+                                // this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability = updatedVals;
+                                // if (prevProb != updatedVals)
+                                // {
+                                //     this.simulation.initialConditions.dayCargoProbs[dayrownumber].modifiedByUser = true;
+                                // }
+                                this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability = Number(daycellspawn);
+                                this.simulation.initialConditions.dayCargoProbs[dayrownumber].modifiedByUser = true;
                             }
                             if(daycolumnnumber == 0 && dayrownumber == 99){
                                 //cargo
