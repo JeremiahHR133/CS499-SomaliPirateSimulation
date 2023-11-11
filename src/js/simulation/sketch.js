@@ -265,89 +265,109 @@ function canvasYToSimY(canvasY) {
     return Math.floor((((canvasY - translateY) / scaleFactor) - ((canvasHeight - simDrawHeight) / 2)) / worldYRatio);
 }
 
-function mouseClicked() {
-    if (mouseButton === LEFT) {
-        // If the mouse was clicked on the canvas and we are seeing the full grid resolution
-        // then we can determine which cell was clicked on by reversing the math done to draw the cell
-        if (mouseOnCanvas && scaleFactor > scaleToShowGrid) {
-            document.getElementsByName("dayRowNumber").values().next().value.innerHTML = "";
-            document.getElementsByName("dayColumnNumber").values().next().value.innerHTML = "";
-            document.getElementsByName("nightRowNumber").values().next().value.innerHTML = "";
-            document.getElementsByName("nightColumnNumber").values().next().value.innerHTML = "";
-            var checkedValue = simManager.simulation.initialConditions.considerDayNight;
-            if(checkedValue){
-                document.getElementsByName("nightRowNumber").values().next().value.innerHTML = canvasYToSimY(mouseY);
-                document.getElementsByName("nightColumnNumber").values().next().value.innerHTML = canvasXToSimX(mouseX);
-                if(document.getElementsByName("nightColumnNumber").values().next().value.innerHTML == 0 && document.getElementsByName("nightRowNumber").values().next().value.innerHTML == 99){
-                    const myNightNode = document.getElementById("nightCornerBoatSelect");
-                    while (myNightNode.firstChild) {
-                      myNightNode.removeChild(myNightNode.lastChild);
-                    }
-                    let child1nightnew = document.createElement("option");
-                    child1nightnewtext = document.createTextNode("Cargo");
-                    child1nightnew.appendChild(child1nightnewtext);
-                    child1nightnew.value = "cargo";
-                    let child2nightnew = document.createElement("option");
-                    child2nightnewtext = document.createTextNode("Pirate");
-                    child2nightnew.appendChild(child2nightnewtext);
-                    child2nightnew.value = "pirate";
-                    document.getElementById("nightCornerBoatSelect").appendChild(child1nightnew);
-                    document.getElementById("nightCornerBoatSelect").appendChild(child2nightnew);
-                }
-                if(document.getElementsByName("nightColumnNumber").values().next().value.innerHTML == 399 && document.getElementsByName("nightRowNumber").values().next().value.innerHTML == 99){
-                    const myNightNode = document.getElementById("nightCornerBoatSelect");
-                    while (myNightNode.firstChild) {
-                      myNightNode.removeChild(myNightNode.lastChild);
-                    }
-                    let child1nightnew = document.createElement("option");
-                    child1nightnewtext = document.createTextNode("Patrol");
-                    child1nightnew.appendChild(child1nightnewtext);
-                    child1nightnew.value = "patrol";
-                    let child2nightnew = document.createElement("option");
-                    child2nightnewtext = document.createTextNode("Pirate");
-                    child2nightnew.appendChild(child2nightnewtext);
-                    child2nightnew.value = "pirate";
-                    document.getElementById("nightCornerBoatSelect").appendChild(child1nightnew);
-                    document.getElementById("nightCornerBoatSelect").appendChild(child2nightnew);
-                }
-            }
-            document.getElementsByName("dayRowNumber").values().next().value.innerHTML = canvasYToSimY(mouseY);
-            document.getElementsByName("dayColumnNumber").values().next().value.innerHTML = canvasXToSimX(mouseX);
-            if(document.getElementsByName("dayColumnNumber").values().next().value.innerHTML == 0 && document.getElementsByName("dayRowNumber").values().next().value.innerHTML == 99){
-                const myDayNode = document.getElementById("dayCornerBoatSelect");
-                while (myDayNode.firstChild) {
-                    myDayNode.removeChild(myDayNode.lastChild);
-                }
-                let child1daynew = document.createElement("option");
-                child1daynewtext = document.createTextNode("Cargo");
-                child1daynew.appendChild(child1daynewtext);
-                child1daynew.value = "cargo";
-                let child2daynew = document.createElement("option");
-                child2daynewtext = document.createTextNode("Pirate");
-                child2daynew.appendChild(child2daynewtext);
-                child2daynew.value = "pirate";
-                document.getElementById("dayCornerBoatSelect").appendChild(child1daynew);
-                document.getElementById("dayCornerBoatSelect").appendChild(child2daynew);
-            }
-            if(document.getElementsByName("dayColumnNumber").values().next().value.innerHTML == 399 && document.getElementsByName("dayRowNumber").values().next().value.innerHTML == 99){
-                    
-                const myDayNode = document.getElementById("dayCornerBoatSelect");
-                while (myDayNode.firstChild) {
-                    myDayNode.removeChild(myDayNode.lastChild);
-                }
-                let child1daynew = document.createElement("option");
-                child1daynewtext = document.createTextNode("Patrol");
-                child1daynew.appendChild(child1daynewtext);
-                child1daynew.value = "patrol";
-                let child2daynew = document.createElement("option");
-                child2daynewtext = document.createTextNode("Pirate");
-                child2daynew.appendChild(child2daynewtext);
-                child2daynew.value = "pirate";
-                document.getElementById("dayCornerBoatSelect").appendChild(child1daynew);
-                document.getElementById("dayCornerBoatSelect").appendChild(child2daynew);
-            }
+function mouseClicked()
+{
+    if (mouseButton === LEFT)
+    {
+        if (mouseOnCanvas && scaleFactor > scaleToShowGrid)
+        {
+            ProcessCellClick();
         }
     }
+}
+
+function ProcessCellClick()
+{
+    let cellRow = canvasYToSimY(mouseY);
+    let cellCol = canvasXToSimX(mouseX);
+
+    simManager.lastProbIndexRow = cellRow;
+    simManager.lastProbIndexCol = cellCol;
+
+    // Cell is not even in the grid
+    if (cellRow < 0 || cellRow > 99 || cellCol < 0 || cellCol > 399)
+    {
+        return;
+    }
+    // Cell is not on the edge
+    if ((cellCol != 0 && cellCol != 399) && cellRow != 99)
+    {
+        return;
+    }
+
+    let considerDayNight = simManager.simulation.initialConditions.considerDayNight;
+
+    UpdateCellSelector("day", cellRow, cellCol);
+    if (considerDayNight)
+    {
+        UpdateCellSelector("night", cellRow, cellCol);
+    }
+
+    simManager.updateSettingsUI();
+}
+
+function UpdateCellSelector(timeOfDay, cellRow, cellCol)
+{
+    // Update row column selector ui
+    document.getElementById(timeOfDay + "CellRow").value = cellRow;
+    document.getElementById(timeOfDay + "CellColumn").value = cellCol;
+
+    // Remove old lables
+    const node = document.getElementById(timeOfDay + "CornerBoatSelect");
+    while (node.firstChild) {
+        node.removeChild(node.lastChild);
+    }
+    
+    // Get the lables for the selection
+    let stringArray = GetLablesFromIndex(cellRow, cellCol);
+
+    // Create new selector lables
+    stringArray.forEach(stringLabel => {
+        let newOption = document.createElement("option");
+        let newOptionText = document.createTextNode(stringLabel);
+        newOption.appendChild(newOptionText);
+        newOption.value = stringLabel;
+        document.getElementById(timeOfDay + "CornerBoatSelect").appendChild(newOption);
+    });
+}
+
+function GetLablesFromIndex(cellRow, cellCol)
+{
+    // Cargo ship or single cell of pirate
+    if (cellCol == 0)
+    {
+        // Bottom left corner (cargo + pirate)
+        if (cellRow == 99)
+        {
+            return ["cargo", "pirate"];
+        }
+        // Cargo
+        else
+        {
+            return ["cargo"];
+        }
+    }
+    // Patrol ship or single cell of pirate
+    else if (cellCol == 399)
+    {
+        // Bottom right corner (patrol + pirate)
+        if (cellRow == 99)
+        {
+            return ["patrol", "pirate"];
+        }
+        // Patrol
+        else
+        {
+            return ["patrol"];
+        }
+    }
+    // Only pirate since mixed cells handled earlier
+    else if (cellRow == 99)
+    {
+        return ["pirate"];
+    }
+    // Not a valid cell for a probability conversion, should never get here
+    return [""];
 }
 
 // ------------------------

@@ -8,6 +8,9 @@ class SimManager {
         this.simReplayMode = false;
         this.replayBackwards = false;
 
+        this.lastProbIndexRow = 0;
+        this.lastProbIndexCol = 0;
+
         this.simulation = new Simulation();
     }
 
@@ -142,24 +145,32 @@ class SimManager {
             if(value != ""){
                 switch (array.indexOf(value)){
                     case 0:
-                        
-                        this.simulation.initialConditions.cargoSpawn = Number(value);
+                        this.simulation.initialConditions.dayCargoSpawn = this.capNumber(
+                            this.safeToNumber(value, this.simulation.initialConditions.dayCargoSpawn),
+                            0, 1);
                         break;
                     case 1:
-                        this.simulation.initialConditions.patrolSpawn = Number(value);
+                        this.simulation.initialConditions.dayPatrolSpawn = this.capNumber(
+                            this.safeToNumber(value, this.simulation.initialConditions.dayPatrolSpawn),
+                            0, 1);
                         break;
                     case 2:
-                        this.simulation.initialConditions.pirateSpawn = Number(value);
+                        this.simulation.initialConditions.dayPirateSpawn = this.capNumber(
+                            this.safeToNumber(value, this.simulation.initialConditions.dayPirateSpawn),
+                            0, 1);
                         break;
                     case 3:
                         if(daycellspawn != null){
-                            if((this.simulation.initialConditions.totalInputCellProb + daycellspawn) > 1.00){
-                                return;
-                            }
                             if(daycolumnnumber == 0 && dayrownumber != 99){
                                 //cargo
-                                this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability = Number(daycellspawn);
-                                this.simulation.initialConditions.dayCargoProbs[dayrownumber].modifiedByUser = true;
+                                let prevProb = this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability;
+                                let clampedInput = this.capNumber(this.safeToNumber(daycellspawn, prevProb), 0, 1);
+                                let updatedVals = this.capProbCell(clampedInput, this.simulation.initialConditions.dayCargoProbs, dayrownumber);
+                                this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability = updatedVals;
+                                if (prevProb != updatedVals)
+                                {
+                                    this.simulation.initialConditions.dayCargoProbs[dayrownumber].modifiedByUser = true;
+                                }
                             }
                             if(daycolumnnumber == 0 && dayrownumber == 99){
                                 //cargo
@@ -200,8 +211,8 @@ class SimManager {
                 
             }
         });
-        simManager.probDist()
-        this.simulation.initialConditions.totalInputCellProb = this.simulation.initialConditions.totalInputCellProb + daycellspawn;
+        this.probDist()
+        this.updateSettingsUI();
     }
 
     nightSave() {
@@ -216,14 +227,13 @@ class SimManager {
             if(value != ""){
                 switch (array.indexOf(value)){
                     case 0:
-                        
-                        this.simulation.initialConditions.cargoSpawn = Number(value);
+                        this.simulation.initialConditions.dayCargoSpawn = this.capNumber(this.safeToNumber(value, 0.5), 0, 1);
                         break;
                     case 1:
-                        this.simulation.initialConditions.patrolSpawn = Number(value);
+                        this.simulation.initialConditions.dayPatrolSpawn = this.capNumber(this.safeToNumber(value, 0.25), 0, 1);
                         break;
                     case 2:
-                        this.simulation.initialConditions.pirateSpawn = Number(value);
+                        this.simulation.initialConditions.dayPirateSpawn = this.capNumber(this.safeToNumber(value, 0.4), 0, 1);
                         break;
                     case 3:
                         if(nightcellspawn != null){
@@ -272,7 +282,7 @@ class SimManager {
                 
             }
         });
-        simManager.nightProbDist()
+        this.nightProbDist()
     }
 
     probDist() {
@@ -407,5 +417,111 @@ class SimManager {
                 probs.probability = newProb / (simProbscount)
             }
         });
+    }
+
+    capProbCell(num, probList, index)
+    {
+        let attemptedTotalUserProb = 0;
+        let currentTotalUserProb = 0;
+        let userInput = num;
+        probList.forEach(cell => {
+            if (cell.index == index)
+            {
+                attemptedTotalUserProb += userInput;
+            }
+            else if (cell.modifiedByUser)
+            {
+                attemptedTotalUserProb += cell.probability;
+            }
+            if (cell.modifiedByUser)
+            {
+                currentTotalUserProb += cell.probability;
+            }
+        });
+
+        if (attemptedTotalUserProb > 1)
+        { // This if statement is where you could put an allert about capping the cell prob
+            userInput = (1 - currentTotalUserProb);
+            console.log("Cannot set value to \'" + num + "\', setting value to \'" + userInput + "\' instead.");
+        }
+
+        return userInput;
+    }
+
+    capNumber(num, min, max)
+    {
+        if (num < min)
+        {
+            return min;
+        }
+        if (num > max)
+        {
+            return max;
+        }
+        return num;
+    }
+
+    safeToNumber(val, valOnFail)
+    {
+        let convert = Number(val);
+        if (isNaN(convert))
+        {
+            return valOnFail;
+        }
+        return convert;
+    }
+
+    updateSettingsUI()
+    {
+        document.getElementById("cargoSpawnRateDay").value  = this.simulation.initialConditions.dayCargoSpawn;
+        document.getElementById("patrolSpawnRateDay").value = this.simulation.initialConditions.dayPatrolSpawn;
+        document.getElementById("pirateSpawnRateDay").value = this.simulation.initialConditions.dayPirateSpawn;
+        document.getElementById("dayCellRow").value         = this.lastProbIndexRow;
+        document.getElementById("dayCellColumn").value      = this.lastProbIndexCol;
+        document.getElementById("dayCellSpawnText").value   = this.getProbValueFromIndex(
+            this.lastProbIndexRow, this.lastProbIndexCol,
+            document.getElementById("dayCornerBoatSelect").value,
+            this.simulation.initialConditions.dayCargoProbs,
+            this.simulation.initialConditions.dayPatrolProbs,
+            this.simulation.initialConditions.dayPirateProbs);
+    }
+
+    getProbValueFromIndex(row, col, cornerSelector, cList, paList, piList)
+    {
+        // Cargo ship or single cell of pirate
+        if (col == 0)
+        {
+            // Pirate corner
+            if (row == 99 && cornerSelector == "pirate")
+            {
+                return piList[col].probability;
+            }
+            // Cargo
+            else
+            {
+                return cList[row].probability;
+            }
+        }
+        // Patrol ship or single cell of pirate
+        else if (col == 399)
+        {
+            // Pirate corner
+            if (row == 99 && cornerSelector == "pirate")
+            {
+                return piList[col].probability;
+            }
+            // Patrol
+            else
+            {
+                return paList[row].probability;
+            }
+        }
+        // Only pirate since mixed cells handled earlier
+        else if (row == 99)
+        {
+            return piList[col].probability;
+        }
+        // Not a valid cell for a probability conversion
+        return "";
     }
 }
