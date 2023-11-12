@@ -82,6 +82,16 @@ class InitSimData {
         this.dayPatrolSpawn = obj.patrolSpawn;
         this.dayPirateSpawn = obj.pirateSpawn;
 
+        // Default probabilities for day spawn
+        this.dayCargoSpawn  = obj.dayCargoSpawn;
+        this.dayPatrolSpawn = obj.dayPatrolSpawn;
+        this.dayPirateSpawn = obj.dayPirateSpawn;
+
+        // Default probabilities for night spawn
+        this.dayCargoSpawn  = obj.nightCargoSpawn;
+        this.dayPatrolSpawn = obj.nightPatrolSpawn;
+        this.dayPirateSpawn = obj.nightPirateSpawn;
+
         // Day probs
         for (let i = 0; i < this.dayCargoProbs.length; i++) {
             const probabilityCell = this.dayCargoProbs[i];

@@ -429,6 +429,8 @@ function importAndStart() {
                         loadingFile = false;
 
                         resolve("File successfully imported!");
+
+                        simManager.updateSettingsUI();
                     }
                 } else {
                     reject("Invalid file type\nAcceptable File Type: .json");
