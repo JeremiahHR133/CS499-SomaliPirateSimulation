@@ -177,7 +177,12 @@ class Simulation {
         // (4)
         this.frames.push(newFrame);
 
-        this.simOver = this.currentSimTime == this.initialConditions.simRunTime;
+        if(this.currentSimTime == this.initialConditions.simRunTime) {
+            if(confirm("The current simulation has completed it's run time\nWould you like to download it?")){
+                downloadCurrentSim();
+            }
+            this.simOver = true;
+        }
         return this.simOver;
     }
 
