@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pirate Simulator</title>
     <link rel="stylesheet" href="/src/css/style.css">
+
+    <script>
+        //NOTE: For security reasons, you can't customize a page closing alert
+        //See: https://stackoverflow.com/questions/53162299/show-alert-message-when-closing-a-window-not-working
+        window.addEventListener('beforeunload', function(e) {
+            e.preventDefault();
+            e.returnValue = ''
+        })
+    </script>
 </head>
 <body>
     <div id="canvas">

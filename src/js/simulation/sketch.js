@@ -369,9 +369,15 @@ function GetLablesFromIndex(cellRow, cellCol)
     return [""];
 }
 
-// ------------------------
+// ------------------------------
+// Exit Alerts and Download Cues
+// ------------------------------
+
+
+
+// ------------------------------
 // Download Sim Function
-// ------------------------
+// ------------------------------
 
 function downloadCurrentSim() {
     //console.log(JSON.stringify(simManager))
@@ -386,11 +392,13 @@ function downloadCurrentSim() {
 
     document.body.removeChild(link)
     window.URL.revokeObjectURL(url)
+
+    navToLanding();
 }
 
-// ------------------------
+// ------------------------------
 // Import Simulation
-// ------------------------
+// ------------------------------
 
 function importAndStart() {
     //currentSimTime is only 0 at the very beginning, so it can tell us if there has been a previously imported simulation
@@ -442,6 +450,18 @@ function importAndStart() {
     }
 }
 
+// ------------------------------
+// Page Navigation
+// ------------------------------
+
+function navToLanding() {
+    if(confirm("Would you like to navigate back to the home page?")){
+        window.location.href="landing.html"
+    } else {
+        simManager.simReplayMode = true;
+    }  
+}
+
 // ------------------------
 // HTML interface functions
 // ------------------------
@@ -479,6 +499,9 @@ function setSpeedSingle() {
 }
 
 function cancelSim() {
+    if (confirm("You have canceled the current simulation\nWould you like to download the current simulation?")) {
+        downloadCurrentSim();
+    }
     simManager.cancelSim();
 }
 
