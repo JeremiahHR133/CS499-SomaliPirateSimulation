@@ -71,6 +71,8 @@ function setup() {
     background(0, 0, 0);
 
     simManager = new SimManager();
+
+    simManager.updateSettingsUI();
 }
 
 function draw() {
@@ -295,25 +297,22 @@ function ProcessCellClick()
         return;
     }
 
-    let considerDayNight = simManager.simulation.initialConditions.considerDayNight;
 
-    UpdateCellSelector("day", cellRow, cellCol);
-    if (considerDayNight)
-    {
-        UpdateCellSelector("night", cellRow, cellCol);
-    }
+    let isDay = document.getElementById("dayNightSettings").value == "day";
 
-    simManager.updateSettingsUI();
+    UpdateCellSelector(cellRow, cellCol);
+
+    simManager.updateSettingsUI(isDay);
 }
 
-function UpdateCellSelector(timeOfDay, cellRow, cellCol)
+function UpdateCellSelector(cellRow, cellCol)
 {
     // Update row column selector ui
-    document.getElementById(timeOfDay + "CellRow").value = cellRow;
-    document.getElementById(timeOfDay + "CellColumn").value = cellCol;
+    document.getElementById("cellRow").value = cellRow;
+    document.getElementById("cellColumn").value = cellCol;
 
     // Remove old lables
-    const node = document.getElementById(timeOfDay + "CornerBoatSelect");
+    const node = document.getElementById("cornerBoatSelect");
     while (node.firstChild) {
         node.removeChild(node.lastChild);
     }
@@ -327,7 +326,7 @@ function UpdateCellSelector(timeOfDay, cellRow, cellCol)
         let newOptionText = document.createTextNode(stringLabel);
         newOption.appendChild(newOptionText);
         newOption.value = stringLabel;
-        document.getElementById(timeOfDay + "CornerBoatSelect").appendChild(newOption);
+        document.getElementById("cornerBoatSelect").appendChild(newOption);
     });
 }
 
@@ -339,12 +338,12 @@ function GetLablesFromIndex(cellRow, cellCol)
         // Bottom left corner (cargo + pirate)
         if (cellRow == 99)
         {
-            return ["cargo", "pirate"];
+            return ["Cargo", "Pirate"];
         }
         // Cargo
         else
         {
-            return ["cargo"];
+            return ["Cargo"];
         }
     }
     // Patrol ship or single cell of pirate
@@ -353,18 +352,18 @@ function GetLablesFromIndex(cellRow, cellCol)
         // Bottom right corner (patrol + pirate)
         if (cellRow == 99)
         {
-            return ["patrol", "pirate"];
+            return ["Patrol", "Pirate"];
         }
         // Patrol
         else
         {
-            return ["patrol"];
+            return ["Patrol"];
         }
     }
     // Only pirate since mixed cells handled earlier
     else if (cellRow == 99)
     {
-        return ["pirate"];
+        return ["Pirate"];
     }
     // Not a valid cell for a probability conversion, should never get here
     return [""];
@@ -490,8 +489,31 @@ function resetReplayToStart() {
 function DNtoggle(){
     if($("#DNToggle").is(":checked")){
         simManager.simulation.initialConditions.considerDayNight = true
+        EnableNightSettings(true);
     }
     else{
         simManager.simulation.initialConditions.considerDayNight = false
+        EnableNightSettings(false);
+    }
+}
+
+function DNSelection()
+{
+    let isDay = document.getElementById("dayNightSettings").value == "day";
+
+    simManager.updateSettingsUI(isDay);
+}
+
+function EnableNightSettings(enable)
+{
+    let selectorBox = document.getElementById("dayNightSettings");
+    let nightOption = selectorBox.options.namedItem("nightOption");
+    if (enable)
+    {
+        nightOption.removeAttribute("disabled");
+    }
+    else
+    {
+        nightOption.setAttribute("disabled", "disabled");
     }
 }

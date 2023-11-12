@@ -33,8 +33,8 @@ class InitSimData {
 
         // Default probabilities for night spawn
         this.nightCargoSpawn = 0.5;
-        this.patrolSpawn = 0.25;
-        this.pirateSpawn = 0.4;
+        this.nightPatrolSpawn = 0.25;
+        this.nightPirateSpawn = 0.4;
 
         // Probability lists
         this.dayCargoProbs = [];
@@ -173,9 +173,9 @@ class Simulation {
             this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.dayPatrolSpawn, this.initialConditions.dayPatrolProbs);
         }
         else{
-            this.trySpawnEntity(newFrame, "Cargo", this.initialConditions.dayCargoSpawn, this.initialConditions.nightCargoProbs);
-            this.trySpawnEntity(newFrame, "Pirate", this.initialConditions.dayPirateSpawn, this.initialConditions.nightPirateProbs);
-            this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.dayPatrolSpawn, this.initialConditions.nightPatrolProbs);
+            this.trySpawnEntity(newFrame, "Cargo", this.initialConditions.nightCargoSpawn, this.initialConditions.nightCargoProbs);
+            this.trySpawnEntity(newFrame, "Pirate", this.initialConditions.nightPirateSpawn, this.initialConditions.nightPirateProbs);
+            this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.nightPatrolSpawn, this.initialConditions.nightPatrolProbs);
         }
         // (3)
         newFrame.tick([0, this.initialConditions.simDimensions[1]], [0, this.initialConditions.simDimensions[0]]);

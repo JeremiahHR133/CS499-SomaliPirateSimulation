@@ -7,6 +7,7 @@ class SimManager {
         this.prevTime = 0;
         this.simReplayMode = false;
         this.replayBackwards = false;
+        this.lockSettings = false;
 
         this.lastProbIndexRow = 0;
         this.lastProbIndexCol = 0;
@@ -23,8 +24,11 @@ class SimManager {
         this.prevTime = 0;
         this.simReplayMode = true;
         this.replayBackwards = false;
+        this.lockSettings = true;
 
         this.simulation.importFromJSON(obj.simulation);
+
+        this.tryLockSettings();
     }
 
     resetToStart() {
@@ -96,6 +100,8 @@ class SimManager {
     play() {
         this.paused = false;
         this.singleStepMode = false;
+        this.lockSettings = true;
+        this.tryLockSettings();
     }
 
     pause() {
@@ -132,291 +138,105 @@ class SimManager {
         document.getElementById("evadesCaptured").innerText    = tempFrame.simStatsData.evadesCaptured;
     }
 
+    tryLockSettings()
+    {
+        if (!this.lockSettings)
+        {
+            return;
+        }
 
-    daySave() {
-        let cargoSpawn = document.getElementById("cargoSpawnRateDay").value;
-        let patrolSpawn = document.getElementById("patrolSpawnRateDay").value;
-        let pirateSpawn = document.getElementById("pirateSpawnRateDay").value;
-        let dayrownumber = document.getElementById("dayCellRow").value;
-        let daycolumnnumber = document.getElementById("dayCellColumn").value;
-        let daycellspawn = document.getElementById("dayCellSpawnText").value;
-        let array = [cargoSpawn, patrolSpawn, pirateSpawn, dayrownumber];
-        array.forEach(value => {
-            if(value != ""){
-                switch (array.indexOf(value)){
-                    case 0:
-                        this.simulation.initialConditions.dayCargoSpawn = this.capNumber(
-                            this.safeToNumber(value, this.simulation.initialConditions.dayCargoSpawn),
-                            0, 1);
-                        break;
-                    case 1:
-                        this.simulation.initialConditions.dayPatrolSpawn = this.capNumber(
-                            this.safeToNumber(value, this.simulation.initialConditions.dayPatrolSpawn),
-                            0, 1);
-                        break;
-                    case 2:
-                        this.simulation.initialConditions.dayPirateSpawn = this.capNumber(
-                            this.safeToNumber(value, this.simulation.initialConditions.dayPirateSpawn),
-                            0, 1);
-                        break;
-                    case 3:
-                        if(daycellspawn != null){
-                            if(daycolumnnumber == 0 && dayrownumber != 99){
-                                //cargo
-                                // let prevProb = this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability;
-                                // let clampedInput = this.capNumber(this.safeToNumber(daycellspawn, prevProb), 0, 1);
-                                // let updatedVals = this.capProbCell(clampedInput, this.simulation.initialConditions.dayCargoProbs, dayrownumber);
-                                // this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability = updatedVals;
-                                // if (prevProb != updatedVals)
-                                // {
-                                //     this.simulation.initialConditions.dayCargoProbs[dayrownumber].modifiedByUser = true;
-                                // }
-                                this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability = Number(daycellspawn);
-                                this.simulation.initialConditions.dayCargoProbs[dayrownumber].modifiedByUser = true;
-                            }
-                            if(daycolumnnumber == 0 && dayrownumber == 99){
-                                //cargo
-                                if(document.getElementById("dayCornerBoatSelect").value == "cargo"){
-                                    this.simulation.initialConditions.dayCargoProbs[dayrownumber].probability = Number(daycellspawn);
-                                    this.simulation.initialConditions.dayCargoProbs[dayrownumber].modifiedByUser = true;
-                                }
-                                if(document.getElementById("dayCornerBoatSelect").value == "pirate"){
-                                    this.simulation.initialConditions.dayPirateProbs[daycolumnnumber].probability = Number(daycellspawn);
-                                    this.simulation.initialConditions.dayPirateProbs[daycolumnnumber].modifiedByUser = true;
-                                }
-                            }
-                            if(dayrownumber == 99 && daycolumnnumber != 0 && daycolumnnumber != 399){
-                                //pirate
-                                this.simulation.initialConditions.dayPirateProbs[daycolumnnumber].probability = Number(daycellspawn);
-                                this.simulation.initialConditions.dayPirateProbs[daycolumnnumber].modifiedByUser = true;
-                            }
-                            if(daycolumnnumber == 399 && dayrownumber != 99){
-                                //patrol
-                                this.simulation.initialConditions.dayPatrolProbs[dayrownumber].probability = Number(daycellspawn);
-                                this.simulation.initialConditions.dayPatrolProbs[dayrownumber].modifiedByUser = true;
-                            }
-                            if(daycolumnnumber == 399 && dayrownumber == 99){
-                                //patrol
-                                if(document.getElementById("dayCornerBoatSelect").value == "patrol"){
-                                    this.simulation.initialConditions.dayPatrolProbs[dayrownumber].probability = Number(daycellspawn);
-                                    this.simulation.initialConditions.dayPatrolProbs[dayrownumber].modifiedByUser = true;
-                                }
-                                if(document.getElementById("dayCornerBoatSelect").value == "pirate"){
-                                    this.simulation.initialConditions.dayPirateProbs[daycolumnnumber].probability = Number(daycellspawn);
-                                    this.simulation.initialConditions.dayPirateProbs[daycolumnnumber].modifiedByUser = true;
-                                }
-                            }
-                        }
-                        break;
-                    
-                }
-                
-            }
-        });
-        this.probDist()
-        this.updateSettingsUI();
-    }
+        let selectList = document.getElementsByClassName("selectLock");
+        let textAreaList = document.getElementsByClassName("textLock");
+        let inputList = document.getElementsByClassName("inputLock");
+        let buttonList = document.getElementsByClassName("buttonLock");
 
-    nightSave() {
-        let cargoSpawn = document.getElementById("cargoSpawnRateNight").value;
-        let patrolSpawn = document.getElementById("patrolSpawnRateNight").value;
-        let pirateSpawn = document.getElementById("pirateSpawnRateNight").value;
-        let nightrownumber = document.getElementById("nightCellRow").value;
-        let nightcolumnnumber = document.getElementById("nightCellColumn").value;
-        let nightcellspawn = document.getElementById("nightCellSpawnText").value;
-        let array = [cargoSpawn, patrolSpawn, pirateSpawn, nightrownumber];
-        array.forEach(value => {
-            if(value != ""){
-                switch (array.indexOf(value)){
-                    case 0:
-                        this.simulation.initialConditions.dayCargoSpawn = this.capNumber(this.safeToNumber(value, 0.5), 0, 1);
-                        break;
-                    case 1:
-                        this.simulation.initialConditions.dayPatrolSpawn = this.capNumber(this.safeToNumber(value, 0.25), 0, 1);
-                        break;
-                    case 2:
-                        this.simulation.initialConditions.dayPirateSpawn = this.capNumber(this.safeToNumber(value, 0.4), 0, 1);
-                        break;
-                    case 3:
-                        if(nightcellspawn != null){
+        selectList.forEach(selectElem => {
+            selectElem.disabled = true;
+        });
 
-                            if(nightcolumnnumber == 0 && nightrownumber != 99){
-                                //cargo
-                                this.simulation.initialConditions.nightCargoProbs[nightrownumber].probability = Number(nightcellspawn);
-                                this.simulation.initialConditions.nightCargoProbs[nightrownumber].modifiedByUser = true;
-                            }
-                            if(nightcolumnnumber == 0 && nightrownumber == 99){
-                                //cargo
-                                if(document.getElementById("nightCornerBoatSelect").value == "cargo"){
-                                    this.simulation.initialConditions.nightCargoProbs[nightrownumber].probability = Number(nightcellspawn);
-                                    this.simulation.initialConditions.nightCargoProbs[nightrownumber].modifiedByUser = true;
-                                }
-                                if(document.getElementById("nightCornerBoatSelect").value == "pirate"){
-                                    this.simulation.initialConditions.nightPirateProbs[nightcolumnnumber].probability = Number(nightcellspawn);
-                                    this.simulation.initialConditions.nightPirateProbs[nightcolumnnumber].modifiedByUser = true;
-                                }
-                            }
-                            if(nightrownumber == 99 && nightcolumnnumber != 0 && nightcolumnnumber != 399){
-                                //pirate
-                                this.simulation.initialConditions.nightPirateProbs[nightcolumnnumber].probability = Number(nightcellspawn);
-                                this.simulation.initialConditions.nightPirateProbs[nightcolumnnumber].modifiedByUser = true;
-                            }
-                            if(nightcolumnnumber == 399 && nightrownumber != 99){
-                                //patrol
-                                this.simulation.initialConditions.nightPatrolProbs[nightrownumber].probability = Number(nightcellspawn);
-                                this.simulation.initialConditions.nightPatrolProbs[nightrownumber].modifiedByUser = true;
-                            }
-                            if(nightcolumnnumber == 399 && nightrownumber == 99){
-                                //patrol
-                                if(document.getElementById("nightCornerBoatSelect").value == "patrol"){
-                                    this.simulation.initialConditions.nightPatrolProbs[nightrownumber].probability = Number(nightcellspawn);
-                                    this.simulation.initialConditions.nightPatrolProbs[nightrownumber].modifiedByUser = true;
-                                }
-                                if(document.getElementById("nightCornerBoatSelect").value == "pirate"){
-                                    this.simulation.initialConditions.nightPirateProbs[nightcolumnnumber].probability = Number(nightcellspawn);
-                                    this.simulation.initialConditions.nightPirateProbs[nightcolumnnumber].modifiedByUser = true;
-                                }
-                            }
-                        }
-                        break;
-                    
-                }
-                
-            }
+        textAreaList.forEach(textElem => {
+            textElem.setAttribute("readonly", "readonly");
         });
-        this.nightProbDist()
-    }
 
-    probDist() {
-        let dayCargolist = this.simulation.initialConditions.dayCargoProbs
-        let dayPatrollist = this.simulation.initialConditions.dayPatrolProbs
-        let dayPiratelist = this.simulation.initialConditions.dayPirateProbs
-        let userProbs = 0
-        let userProbscount = 0
-        let simProbs = 0
-        let simProbscount = 0
-        let newProb = 0
-        dayCargolist.forEach(prob => {
-            if(prob.modifiedByUser == true){
-                userProbs = userProbs + prob.probability
-                userProbscount = userProbscount + 1
-            }
-            if(prob.modifiedByUser == false){
-                simProbs = simProbs + prob.probability
-                simProbscount = simProbscount + 1
-            }
+        inputList.forEach(inputElem => {
+           inputElem.setAttribute("disabled", "disabled");
         });
-        dayCargolist.forEach(probs => {
-            if(probs.modifiedByUser == false){
-                newProb = 1 - userProbs
-                probs.probability = newProb / (simProbscount)
-            }
-        });
-        userProbs = 0
-        userProbscount = 0
-        simProbs = 0
-        simProbscount = 0
-        dayPatrollist.forEach(prob => {
-            if(prob.modifiedByUser == true){
-                userProbs = userProbs + prob.probability
-                userProbscount = userProbscount + 1
-            }
-            if(prob.modifiedByUser == false){
-                simProbs = simProbs + prob.probability
-                simProbscount = simProbscount + 1
-            }
-        });
-        dayPatrollist.forEach(probs => {
-            if(probs.modifiedByUser == false){
-                newProb = 1 - userProbs
-                probs.probability = newProb / (simProbscount)
-            }
-        });
-        userProbs = 0
-        userProbscount = 0
-        simProbs = 0
-        simProbscount = 0
-        dayPiratelist.forEach(prob => {
-            if(prob.modifiedByUser == true){
-                userProbs = userProbs + prob.probability
-                userProbscount = userProbscount + 1
-            }
-            if(prob.modifiedByUser == false){
-                simProbs = simProbs + prob.probability
-                simProbscount = simProbscount + 1
-            }
-        });
-        dayPiratelist.forEach(probs => {
-            if(probs.modifiedByUser == false){
-                newProb = 1 - userProbs
-                probs.probability = newProb / (simProbscount)
-            }
+
+        buttonList.forEach(buttonElem => {
+            buttonElem.disabled = true;
         });
     }
 
-    nightProbDist() {
-        let nightCargolist = this.simulation.initialConditions.nightCargoProbs
-        let nightPatrollist = this.simulation.initialConditions.nightPatrolProbs
-        let nightPiratelist = this.simulation.initialConditions.nightPirateProbs
-        let userProbs = 0
-        let userProbscount = 0
-        let simProbs = 0
-        let simProbscount = 0
-        let newProb = 0
-        nightCargolist.forEach(prob => {
-            if(prob.modifiedByUser == true){
-                userProbs = userProbs + prob.probability
-                userProbscount = userProbscount + 1
-            }
-            if(prob.modifiedByUser == false){
-                simProbs = simProbs + prob.probability
-                simProbscount = simProbscount + 1
+    saveSettings()
+    {
+        let isDaySetting = document.getElementById("dayNightSettings").value == "day";
+
+        let rawSimRunTimeSetting = document.getElementById("simRunTime").value;
+        this.simulation.initialConditions.simRunTime = this.capNumber(this.safeToNumber(rawSimRunTimeSetting, this.simulation.initialConditions.simRunTime), 720, 43200);
+
+        let cargoSpawn = document.getElementById("cargoSpawnRate").value;
+        let patrolSpawn = document.getElementById("patrolSpawnRate").value;
+        let pirateSpawn = document.getElementById("pirateSpawnRate").value;
+
+        if (isDaySetting)
+        {
+            this.simulation.initialConditions.dayCargoSpawn = this.capNumber(
+                            this.safeToNumber(cargoSpawn, this.simulation.initialConditions.dayCargoSpawn),
+                            0, 1);
+            this.simulation.initialConditions.dayPatrolSpawn = this.capNumber(
+                            this.safeToNumber(patrolSpawn, this.simulation.initialConditions.dayPatrolSpawn),
+                            0, 1);
+            this.simulation.initialConditions.dayPirateSpawn = this.capNumber(
+                            this.safeToNumber(pirateSpawn, this.simulation.initialConditions.dayPirateSpawn),
+                            0, 1);
+        }
+        else
+        {
+            this.simulation.initialConditions.nightCargoSpawn = this.capNumber(
+                            this.safeToNumber(cargoSpawn, this.simulation.initialConditions.nightCargoSpawn),
+                            0, 1);
+            this.simulation.initialConditions.nightPatrolSpawn = this.capNumber(
+                            this.safeToNumber(patrolSpawn, this.simulation.initialConditions.nightPatrolSpawn),
+                            0, 1);
+            this.simulation.initialConditions.nightPirateSpawn = this.capNumber(
+                            this.safeToNumber(pirateSpawn, this.simulation.initialConditions.nightPirateSpawn),
+                            0, 1);
+        }
+
+        let cellRowNumber = this.lastProbIndexRow;
+        let cellColNumber = this.lastProbIndexCol;
+
+        let boatSelector = document.getElementById("cornerBoatSelect").value;
+
+        let probListToUpdate = this.getListByIndex(cellRowNumber, cellColNumber, isDaySetting, boatSelector);
+        let newCellProbValue = document.getElementById("cellSpawnText").value;
+
+        this.setProbabilityByList(probListToUpdate, cellRowNumber, cellColNumber, newCellProbValue);
+
+        this.redistributeCellProbabilities(probListToUpdate);
+
+        this.updateSettingsUI(isDaySetting);
+    }
+
+    redistributeCellProbabilities(probList)
+    {
+        let totalUserProb = 0;
+        let numUntoutchedCells = probList.length;
+        probList.forEach(probCell => {
+            if (probCell.modifiedByUser)
+            {
+                totalUserProb += probCell.probability;
+                numUntoutchedCells -= 1;
             }
         });
-        nightCargolist.forEach(probs => {
-            if(probs.modifiedByUser == false){
-                newProb = 1 - userProbs
-                probs.probability = newProb / (simProbscount)
-            }
-        });
-        userProbs = 0
-        userProbscount = 0
-        simProbs = 0
-        simProbscount = 0
-        nightPatrollist.forEach(prob => {
-            if(prob.modifiedByUser == true){
-                userProbs = userProbs + prob.probability
-                userProbscount = userProbscount + 1
-            }
-            if(prob.modifiedByUser == false){
-                simProbs = simProbs + prob.probability
-                simProbscount = simProbscount + 1
-            }
-        });
-        nightPatrollist.forEach(probs => {
-            if(probs.modifiedByUser == false){
-                newProb = 1 - userProbs
-                probs.probability = newProb / (simProbscount)
-            }
-        });
-        userProbs = 0
-        userProbscount = 0
-        simProbs = 0
-        simProbscount = 0
-        nightPiratelist.forEach(prob => {
-            if(prob.modifiedByUser == true){
-                userProbs = userProbs + prob.probability
-                userProbscount = userProbscount + 1
-            }
-            if(prob.modifiedByUser == false){
-                simProbs = simProbs + prob.probability
-                simProbscount = simProbscount + 1
-            }
-        });
-        nightPiratelist.forEach(probs => {
-            if(probs.modifiedByUser == false){
-                newProb = 1 - userProbs
-                probs.probability = newProb / (simProbscount)
+
+        let remainingProb = 1 - totalUserProb;
+        let newCellProb = remainingProb / numUntoutchedCells;
+
+        probList.forEach(probCell => {
+            if (!probCell.modifiedByUser)
+            {
+                probCell.probability = newCellProb;
             }
         });
     }
@@ -466,64 +286,95 @@ class SimManager {
     safeToNumber(val, valOnFail)
     {
         let convert = Number(val);
-        if (isNaN(convert))
+        if (isNaN(convert) || val == "")
         {
             return valOnFail;
         }
         return convert;
     }
 
-    updateSettingsUI()
+    updateSettingsUI(isDay)
     {
-        document.getElementById("cargoSpawnRateDay").value  = this.simulation.initialConditions.dayCargoSpawn;
-        document.getElementById("patrolSpawnRateDay").value = this.simulation.initialConditions.dayPatrolSpawn;
-        document.getElementById("pirateSpawnRateDay").value = this.simulation.initialConditions.dayPirateSpawn;
-        document.getElementById("dayCellRow").value         = this.lastProbIndexRow;
-        document.getElementById("dayCellColumn").value      = this.lastProbIndexCol;
-        document.getElementById("dayCellSpawnText").value   = this.getProbValueFromIndex(
+        document.getElementById("simRunTime").value = this.simulation.initialConditions.simRunTime;
+        if (isDay)
+        {
+            document.getElementById("cargoSpawnRate").value  = this.simulation.initialConditions.dayCargoSpawn;
+            document.getElementById("patrolSpawnRate").value = this.simulation.initialConditions.dayPatrolSpawn;
+            document.getElementById("pirateSpawnRate").value = this.simulation.initialConditions.dayPirateSpawn;
+        }
+        else
+        {
+            document.getElementById("cargoSpawnRate").value  = this.simulation.initialConditions.nightCargoSpawn;
+            document.getElementById("patrolSpawnRate").value = this.simulation.initialConditions.nightPatrolSpawn;
+            document.getElementById("pirateSpawnRate").value = this.simulation.initialConditions.nightPirateSpawn;
+        }
+
+        document.getElementById("cellRow").value         = this.lastProbIndexRow;
+        document.getElementById("cellColumn").value      = this.lastProbIndexCol;
+        document.getElementById("cellSpawnText").value   = this.getProbValueFromIndex(
             this.lastProbIndexRow, this.lastProbIndexCol,
-            document.getElementById("dayCornerBoatSelect").value,
-            this.simulation.initialConditions.dayCargoProbs,
-            this.simulation.initialConditions.dayPatrolProbs,
-            this.simulation.initialConditions.dayPirateProbs);
+            document.getElementById("cornerBoatSelect").value,
+            isDay);
     }
 
-    getProbValueFromIndex(row, col, cornerSelector, cList, paList, piList)
+    getProbValueFromIndex(row, col, cornerSelector, isDay)
+    {
+        let probList = this.getListByIndex(row, col, isDay, cornerSelector);
+        let index = probList.length == 400 ? col : row;
+        return probList[index].probability;
+    }
+
+    getListByIndex(row, col, isDay, cornerSelector)
     {
         // Cargo ship or single cell of pirate
         if (col == 0)
         {
-            // Pirate corner
-            if (row == 99 && cornerSelector == "pirate")
+            // Bottom left corner (cargo + pirate)
+            if (row == 99 && cornerSelector == "Pirate")
             {
-                return piList[col].probability;
+                return isDay ? this.simulation.initialConditions.dayPirateProbs : this.simulation.initialConditions.nightPirateProbs;
             }
             // Cargo
             else
             {
-                return cList[row].probability;
+                return isDay ? this.simulation.initialConditions.dayCargoProbs : this.simulation.initialConditions.nightCargoProbs;
             }
         }
         // Patrol ship or single cell of pirate
         else if (col == 399)
         {
-            // Pirate corner
-            if (row == 99 && cornerSelector == "pirate")
+            // Bottom right corner (patrol + pirate)
+            if (row == 99 && cornerSelector == "Pirate")
             {
-                return piList[col].probability;
+                return isDay ? this.simulation.initialConditions.dayPirateProbs : this.simulation.initialConditions.nightPirateProbs;
             }
             // Patrol
             else
             {
-                return paList[row].probability;
+                return isDay ? this.simulation.initialConditions.dayPatrolProbs : this.simulation.initialConditions.nightPatrolProbs;
             }
         }
         // Only pirate since mixed cells handled earlier
         else if (row == 99)
         {
-            return piList[col].probability;
+            return isDay ? this.simulation.initialConditions.dayPirateProbs : this.simulation.initialConditions.nightPirateProbs;
         }
-        // Not a valid cell for a probability conversion
-        return "";
+        // Not a valid cell for a probability conversion, should never get here
+        return [];
+    }
+
+    setProbabilityByList(probList, row, col, newSpawnProb)
+    {
+        let index = probList.length == 400 ? col : row;
+
+        let prevProb = probList[index].probability;
+        let clampedInput = this.capNumber(this.safeToNumber(newSpawnProb, prevProb), 0, 1);
+        let updatedVal = this.capProbCell(clampedInput, probList, index);
+        probList[index].probability = updatedVal;
+        probList[index].probability = updatedVal;
+        if (prevProb != updatedVal)
+        {
+            probList[index].modifiedByUser = true;
+        }
     }
 }

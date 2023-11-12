@@ -43,42 +43,28 @@
         <div>Evades Captured: <div id="evadesCaptured">0</div></div>
     </div>
 
-    <div id="daySettings">
-        Day                   
-        <div>Cargo Spawn Rate: <textarea name="cargoDay" id="cargoSpawnRateDay" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div>Patrol Spawn Rate: <textarea name="patrolDay" id="patrolSpawnRateDay" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div>Pirate Spawn Rate: <textarea name="pirateDay" id="pirateSpawnRateDay" cols="10" rows="1" style="resize:none"></textarea></div>
-        <br>
-        <div id="cellRow">Row: <textarea name="dayRowNumber" id="dayCellRow" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div id="cellColumn">Column: <textarea name="dayColumnNumber" id="dayCellColumn" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div>Percentage chance a boat will spawn in this cell: <textarea name="cellSpawnChance" id="dayCellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
-        <select id="dayCornerBoatSelect">
-            <option value="patrol">Patrol</option>
-            <option value="pirate">Pirate</option>
-        </select>
-        <div><button onclick="simManager.daySave()">Save Day Settings</button></div>
-    </div>
-
     <div id="Normalsettings">
-        <div id="DNToggleContainer"><input id="DNToggle" type="checkbox" onclick="DNtoggle()">Day/Night Toggle</div><br>
+        <div>Sim Run Time: <textarea class="textLock" id="simRunTime" cols="10" rows="1" style="resize: none;"></textarea></div>
+        <div id="DNToggleContainer"><input class="inputLock" id="DNToggle" type="checkbox" onclick="DNtoggle()">Enable Night Settings</div>
     </div>
 
-
-    <div id="nightSettings">
-        Night
-        <div>Cargo Spawn Rate: <textarea name="cargoNight" id="cargoSpawnRateNight" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div>Patrol Spawn Rate: <textarea name="patrolNight" id="patrolSpawnRateNight" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div>Pirate Spawn Rate: <textarea name="pirateNight" id="pirateSpawnRateNight" cols="10" rows="1" style="resize:none"></textarea></div>
+    <div id="settings">
+        <select class="selectLock" id="dayNightSettings" onchange="DNSelection()">
+            <option id="dayOption" value="day">Day</option>
+            <option id="nightOption" value="night" disabled>Night</option>
+        </select>                   
+        <div>Cargo Spawn Rate: <textarea class="textLock" name="cargoSpawnRate" id="cargoSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Patrol Spawn Rate: <textarea class="textLock" name="patrolSpawnRate" id="patrolSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
+        <div>Pirate Spawn Rate: <textarea class="textLock" name="pirateSpawnRate" id="pirateSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
         <br>
-        <div id="cellRow">Row: <textarea name="nightRowNumber" id="nightCellRow" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div id="cellColumn">Column: <textarea name="nightColumnNumber" id="nightCellColumn" cols="5" rows="1" style="resize:none"></textarea></div>
-        <div>Percentage chance a boat will spawn in this cell: <textarea name="cellSpawnChance" id="nightCellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
-        <select id="nightCornerBoatSelect">
-            <option value="patrol">Patrol</option>
-            <option value="pirate">Pirate</option>
+        <div>Row: <textarea class="textLock" name="rowNumber" id="cellRow" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div>Column: <textarea class="textLock" name="columnNumber" id="cellColumn" cols="5" rows="1" style="resize:none"></textarea></div>
+        <div>Percentage chance a boat will spawn in this cell: <textarea class="textLock" name="cellSpawnChance" id="cellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
+        <select class="selectLock" id="cornerBoatSelect" onchange="DNSelection()">
+            <option>Cargo</option>
         </select>
-        <div><button onclick="simManager.nightSave()">Save Night Settings</button></div>
-    </div><br>
+        <div><button class="buttonLock" onclick="simManager.saveSettings()">Save Settings</button></div>
+    </div>
 
 
 
