@@ -107,21 +107,18 @@ p {
     display: inline-flex;
 }
 
-#normCornerBoatSelect{
+#cornerBoatSelect{
     margin-bottom: 0.15in;
 }
 
-#dayCornerBoatSelect{
-    margin-bottom: 0.15in;
-}
-
-#nightCornerBoatSelect{
-    margin-bottom: 0.15in;
+#simRunTime{
+    margin-top: 0.15in;
 }
 
 
 #DNToggleContainer{
-    margin-bottom: 0.25in;
+    margin-bottom: 0.15in;
+    margin-top: 0.15in;
 }
 
 #evadesCaptured{
@@ -133,7 +130,7 @@ p {
     float: none;
 }
 
-#daySettings{
+#settings{
     color: white;
     float: none;
     margin-right: 1in;
@@ -141,18 +138,10 @@ p {
     margin-top: 0.25in;
 }
 
-#nightSettings{
-    color: white;
-
-}
-
 #cellSettings{
     color: white;
 }
 
-#cellRow{
-    float: left;
+.textLock:read-only{
+    background-color:gray;
 }
-
-
-
