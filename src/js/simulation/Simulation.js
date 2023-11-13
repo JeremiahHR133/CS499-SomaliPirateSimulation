@@ -26,10 +26,15 @@ class InitSimData {
         this.considerDayNight = false; // Specifies if individual day / night settings should be used
         this.totalInputCellProb = 0;
 
-        // Default probabilities for spawn
-        this.cargoSpawn = 0.5;
-        this.patrolSpawn = 0.25;
-        this.pirateSpawn = 0.4;
+        // Default probabilities for day spawn
+        this.dayCargoSpawn = 0.5;
+        this.dayPatrolSpawn = 0.25;
+        this.dayPirateSpawn = 0.4;
+
+        // Default probabilities for night spawn
+        this.nightCargoSpawn = 0.5;
+        this.nightPatrolSpawn = 0.25;
+        this.nightPirateSpawn = 0.4;
 
         // Probability lists
         this.dayCargoProbs = [];
@@ -73,9 +78,19 @@ class InitSimData {
         this.considerDayNight = obj.considerDayNight; // Specifies if individual day / night settings should be used
         this.totalInputCellProb = obj.totalInputCellProb;
         // Default probabilities for spawn
-        this.cargoSpawn = obj.cargoSpawn;
-        this.patrolSpawn = obj.patrolSpawn;
-        this.pirateSpawn = obj.pirateSpawn;
+        this.dayCargoSpawn = obj.cargoSpawn;
+        this.dayPatrolSpawn = obj.patrolSpawn;
+        this.dayPirateSpawn = obj.pirateSpawn;
+
+        // Default probabilities for day spawn
+        this.dayCargoSpawn  = obj.dayCargoSpawn;
+        this.dayPatrolSpawn = obj.dayPatrolSpawn;
+        this.dayPirateSpawn = obj.dayPirateSpawn;
+
+        // Default probabilities for night spawn
+        this.dayCargoSpawn  = obj.nightCargoSpawn;
+        this.dayPatrolSpawn = obj.nightPatrolSpawn;
+        this.dayPirateSpawn = obj.nightPirateSpawn;
 
         // Day probs
         for (let i = 0; i < this.dayCargoProbs.length; i++) {
@@ -164,21 +179,26 @@ class Simulation {
         let newFrame = new Frame(this.currentSimTime, isDay, this.frames[this.currentFrameNumber - 1]);
         // (2)
         if(isDay == true){
-            this.trySpawnEntity(newFrame, "Cargo", this.initialConditions.cargoSpawn, this.initialConditions.dayCargoProbs);
-            this.trySpawnEntity(newFrame, "Pirate", this.initialConditions.pirateSpawn, this.initialConditions.dayPirateProbs);
-            this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.patrolSpawn, this.initialConditions.dayPatrolProbs);
+            this.trySpawnEntity(newFrame, "Cargo", this.initialConditions.dayCargoSpawn, this.initialConditions.dayCargoProbs);
+            this.trySpawnEntity(newFrame, "Pirate", this.initialConditions.dayPirateSpawn, this.initialConditions.dayPirateProbs);
+            this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.dayPatrolSpawn, this.initialConditions.dayPatrolProbs);
         }
         else{
-            this.trySpawnEntity(newFrame, "Cargo", this.initialConditions.cargoSpawn, this.initialConditions.nightCargoProbs);
-            this.trySpawnEntity(newFrame, "Pirate", this.initialConditions.pirateSpawn, this.initialConditions.nightPirateProbs);
-            this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.patrolSpawn, this.initialConditions.nightPatrolProbs);
+            this.trySpawnEntity(newFrame, "Cargo", this.initialConditions.nightCargoSpawn, this.initialConditions.nightCargoProbs);
+            this.trySpawnEntity(newFrame, "Pirate", this.initialConditions.nightPirateSpawn, this.initialConditions.nightPirateProbs);
+            this.trySpawnEntity(newFrame, "Patrol", this.initialConditions.nightPatrolSpawn, this.initialConditions.nightPatrolProbs);
         }
         // (3)
         newFrame.tick([0, this.initialConditions.simDimensions[1]], [0, this.initialConditions.simDimensions[0]]);
         // (4)
         this.frames.push(newFrame);
 
-        this.simOver = this.currentSimTime == this.initialConditions.simRunTime;
+        if(this.currentSimTime == this.initialConditions.simRunTime) {
+            if(confirm("The current simulation has completed it's run time\nWould you like to download it?")){
+                downloadCurrentSim();
+            }
+            this.simOver = true;
+        }
         return this.simOver;
     }
 
