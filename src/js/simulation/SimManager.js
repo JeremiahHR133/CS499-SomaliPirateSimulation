@@ -49,6 +49,7 @@ class SimManager {
             //console.log(this.simulation.toString("   "));
             this.prevTime = performance.now();
             this.updateCounts();
+            this.updateTime();
         }
 
         if (this.singleStepMode) {
@@ -129,6 +130,21 @@ class SimManager {
         document.getElementById("evadesCaptured").innerText    = tempFrame.simStatsData.evadesCaptured;
     }
 
+    updateTime() {
+        let tempFrame = this.simulation.getCurrentFrame();
+        let tempTime = simManager.simulation.simulationClock.getMinutes();
+        let tempTime2 = simManager.simulation.simulationClock.getMinutes();
+        simManager.simulation.simulationClock.setMinutes(tempTime + 5);
+        //simManager.simulation.simulationClock.setMinutes(tempTime2 - 5);
+        document.getElementById("timeStep").innerText = tempFrame.frameTime;
+        document.getElementById("timeElapsedValue").innerText = simManager.simulation.simulationClock.toLocaleTimeString('en-US');
+        //document.getElementById("timeLeftValue").innerText = simManager.simulation.simulationClock.toLocaleTimeString('en-US');
+    }
+
+    setClock() {
+        document.getElementById("timeElapsedValue").innerText = simManager.simulation.simulationClock.toLocaleTimeString('en-US');
+        document.getElementById("timeLeftValue").innerText = simManager.simulation.simulationClock.toLocaleTimeString('en-US');
+    }
 
     daySave() {
         let cargoSpawn = document.getElementById("cargoSpawnRateDay").value;

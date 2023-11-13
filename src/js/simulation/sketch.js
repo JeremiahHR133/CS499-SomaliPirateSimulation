@@ -71,6 +71,7 @@ function setup() {
     background(0, 0, 0);
 
     simManager = new SimManager();
+    simManager.setClock();
 }
 
 function draw() {

@@ -63,6 +63,12 @@ p {
     float: right;
 }
 
+#time{
+    color: white;
+    text-align: right;
+    float: right;
+}
+
 #cargosEntered{
     display: inline-flex;
 }
