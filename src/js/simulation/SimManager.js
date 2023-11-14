@@ -145,14 +145,31 @@ class SimManager {
         let tempTime2 = simManager.simulation.simulationClock.getMinutes();
         simManager.simulation.simulationClock.setMinutes(tempTime + 5);
         //simManager.simulation.simulationClock.setMinutes(tempTime2 - 5);
-        document.getElementById("timeStep").innerText = tempFrame.frameTime;
+        document.getElementById("timeStep").innerText = tempFrame.frameTime / 5;
         document.getElementById("timeElapsedValue").innerText = simManager.simulation.simulationClock.toLocaleTimeString('en-US');
         //document.getElementById("timeLeftValue").innerText = simManager.simulation.simulationClock.toLocaleTimeString('en-US');
+        //temp = simManager.simulation.simulationClock;
+        var timeToDate = temp - simManager.simulation.simulationClock;
+        var days = Math.floor(timeToDate / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((timeToDate % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((timeToDate % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((timeToDate % (1000 * 60)) / 1000);
+        document.getElementById("timeLeftValue").innerHTML = days + "<small>d</small> " + hours + "<small>h</small> " + minutes + "<small>m</small> " + seconds + "<small>s</small> ";
     }
 
     setClock() {
         document.getElementById("timeElapsedValue").innerText = simManager.simulation.simulationClock.toLocaleTimeString('en-US');
-        document.getElementById("timeLeftValue").innerText = simManager.simulation.simulationClock.toLocaleTimeString('en-US');
+        globalThis.temp = new Date(simManager.simulation.simulationClock);
+        //temp = simManager.simulation.simulationClock;
+        let tempHours = temp.getHours();
+        tempHours = tempHours + (simManager.simulation.initialConditions.simRunTime / 60)
+        temp.setHours(tempHours);
+        var timeToDate = temp - simManager.simulation.simulationClock;
+        var days = Math.floor(timeToDate / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((timeToDate % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((timeToDate % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((timeToDate % (1000 * 60)) / 1000);
+        document.getElementById("timeLeftValue").innerHTML = days + "<small>d</small> " + hours + "<small>h</small> " + minutes + "<small>m</small> " + seconds + "<small>s</small> ";
     }
     tryLockSettings()
     {

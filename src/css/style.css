@@ -65,8 +65,12 @@ p {
 
 #time{
     color: white;
-    text-align: right;
+    text-align: left;
     float: right;
+}
+
+#timeStep{
+    display: inline-flex;
 }
 
 #cargosEntered{
