@@ -607,3 +607,13 @@ function EnableNightSettings(enable)
         nightOption.setAttribute("disabled", "disabled");
     }
 }
+
+function SaveGraphicsSettings()
+{
+
+}
+
+function UpdageGraphicsSettingsUI()
+{
+    document.getElementById("scaleToShowGrid").value = scale
+}

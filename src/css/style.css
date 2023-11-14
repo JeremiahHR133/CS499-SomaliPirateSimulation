@@ -138,6 +138,14 @@ p {
     margin-top: 0.25in;
 }
 
+#GraphicsSettings{
+    color: white;
+    float: none;
+    margin-right: 1in;
+    margin-bottom: 0.40in;
+    margin-top: 0.25in;
+}
+
 #cellSettings{
     color: white;
 }
