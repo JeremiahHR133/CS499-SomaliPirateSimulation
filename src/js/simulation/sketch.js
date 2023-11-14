@@ -31,6 +31,11 @@ let simMapPercentage = 0.9;    // The percentage of the map to be used for the g
 let lowResImages = false;      // Use high or low resolution images
 let showLegend = false;        // Show the map legend
 
+// Probably shouldn't customize these since they are based off of the boat colors
+let cargoProbColor  = [0, 129, 8];
+let patrolProbColor = [162, 0, 165];
+let pirateProbColor = [0, 0, 0];
+
 // Graphics variables that cannot be customized
 // The initial values for these should not be changed either
 // Variables that do not have an initial condition are dependent on other variables that could be configurable
@@ -101,6 +106,8 @@ function draw() {
     drawGridLines();
 
     drawBoatSprites();
+
+    drawModifiedCells();
 }
 
 // Because customization is cool
@@ -124,6 +131,22 @@ function simXToWorldX(simX) {
 
 function simYToWorldY(simY) {
     return simY * worldYRatio + (worldYRatio / 2) + ((canvasHeight - simDrawHeight) / 2);
+}
+
+function simXToWorldXL(simX) {
+    return simX * worldXRatio + ((canvasWidth - simDrawWidth) / 2);
+}
+
+function simYToWorldYT(simY) {
+    return simY * worldYRatio + ((canvasHeight - simDrawHeight) / 2);
+}
+
+function simXToWorldXR(simX) {
+    return simX * worldXRatio + worldXRatio + ((canvasWidth - simDrawWidth) / 2);
+}
+
+function simYToWorldYB(simY) {
+    return simY * worldYRatio + worldYRatio + ((canvasHeight - simDrawHeight) / 2);
 }
 
 function drawBoatSprites() {
@@ -187,6 +210,48 @@ function drawGridLines() {
         for (let i = 0; i < simManager.simulation.initialConditions.simDimensions[1] + 1; i += 4) {
             line(i * worldXRatio + ((canvasWidth - simDrawWidth) / 2), 0 + ((canvasHeight - simDrawHeight) / 2), i * worldXRatio + ((canvasWidth - simDrawWidth) / 2), (simManager.simulation.initialConditions.simDimensions[0] * worldYRatio) + ((canvasHeight - simDrawHeight) / 2));
         }
+    }
+}
+
+function drawModifiedCells()
+{
+    if (scaleFactor <= scaleToShowGrid)
+    {
+        return;
+    }
+    let isDay = document.getElementById("dayNightSettings").value == "day";
+
+    let cargoList = simManager.getListByIndex(99, 0, isDay, "Cargo");
+    let pirateList = simManager.getListByIndex(99, 0, isDay, "Pirate");
+    let patrolList = simManager.getListByIndex(99, 399, isDay, "Patrol");
+
+    drawModifiedList(cargoList, cargoProbColor, 0, 0);
+    drawModifiedList(pirateList, pirateProbColor, 0, 99);
+    drawModifiedList(patrolList, patrolProbColor, 399, 0);
+}
+
+function drawModifiedList(list, color, xCoord, yCoord)
+{
+    fill(color[0], color[1], color[2], 127);
+    strokeWeight(0);
+    rectMode(CORNERS);
+    if (list.length == 400)
+    {
+        list.forEach(cell => {
+            if (cell.modifiedByUser)
+            {
+                rect(simXToWorldXL(cell.index), simYToWorldYT(yCoord), simXToWorldXR(cell.index), simYToWorldYB(yCoord));
+            }   
+        });
+    }
+    else
+    {
+        list.forEach(cell => {
+            if (cell.modifiedByUser)
+            {
+                rect(simXToWorldXL(xCoord), simYToWorldYT(cell.index), simXToWorldXR(xCoord), simYToWorldYB(cell.index));
+            }   
+        });
     }
 }
 
