@@ -6,14 +6,15 @@
     <title>Pirate Simulator</title>
     <link rel="stylesheet" href="/src/css/style.css">
 
-    <!--input was originally a hidden button in the body, but this works better-->
-    <input type="file" id="importFile" style="visibility: hidden;"/>    
 </head>
 <body>
     <div id="canvas">
         <canvas id="P5-DRAWING-CANVAS"></canvas>
     </div>
     
+    <!--input was originally a hidden button in the body, but this works better-->
+    <input type="file" id="importFile" style="visibility: hidden;"/>    
+
     <div id="buttons">
         <button id="b_start" onclick="importAndStart(); ">Play</button>
         <button id="b_pause" onclick="pauseSim()">Pause</button>
@@ -52,30 +53,53 @@
         </div>
     </div>
 
-    <div id="Normalsettings">
-        <div>Sim Run Time: <textarea class="textLock" id="simRunTime" cols="10" rows="1" style="resize: none;"></textarea></div>
-        <div id="DNToggleContainer"><input class="inputLock" id="DNToggle" type="checkbox" onclick="DNtoggle()">Enable Night Settings</div>
+    <div id="time">
+        State Information
+        <div id="timeStepContainer">TimeStep: <div id="timeStep">0</div></div>
+            <div>
+                <div id="realSimTimeElapsed">Time Elapsed: <time datetime="08:00:00" id="timeElapsedValue"></time></div>
+                <div id="realSimTimeLeft">Time Left: <time datetime="08:00:00" id="timeLeftValue"></time></div>
+        </div>
     </div>
 
-    <div id="settings">
-        <select id="dayNightSettings" onchange="DNSelection()">
-            <option id="dayOption" value="day">Day</option>
-            <option id="nightOption" value="night" disabled>Night</option>
-        </select>                   
-        <div>Cargo Spawn Rate: <textarea class="textLock" name="cargoSpawnRate" id="cargoSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div>Patrol Spawn Rate: <textarea class="textLock" name="patrolSpawnRate" id="patrolSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
-        <div>Pirate Spawn Rate: <textarea class="textLock" name="pirateSpawnRate" id="pirateSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
-        <br>
-        <div>Row: <textarea readonly name="rowNumber" id="cellRow" cols="5" rows="1" style="resize:none;background-color: gray;"></textarea></div>
-        <div>Column: <textarea readonly name="columnNumber" id="cellColumn" cols="5" rows="1" style="resize:none; background-color: gray;"></textarea></div>
-        <div>Percentage chance a boat will spawn in this cell: <textarea class="textLock" name="cellSpawnChance" id="cellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
-        <select id="cornerBoatSelect" onchange="DNSelection()">
-            <option>Cargo</option>
-        </select>
-        <div><button class="buttonLock" onclick="simManager.saveSettings()">Save Settings</button></div>
+    <div id="SettingsContainer" style="display: inline-flex;">
+        <div>
+            <div id="Normalsettings">
+                <div>Sim Run Time: <textarea class="textLock" id="simRunTime" cols="10" rows="1" style="resize: none;"></textarea></div>
+                <div id="DNToggleContainer"><input class="inputLock" id="DNToggle" type="checkbox" onclick="DNtoggle()">Enable Night Settings</div>
+            </div>
+            <div id="settings">
+                <select id="dayNightSettings" onchange="DNSelection()">
+                    <option id="dayOption" value="day">Day</option>
+                    <option id="nightOption" value="night" disabled>Night</option>
+                </select>                   
+                <div>Cargo Spawn Rate: <textarea class="textLock" name="cargoSpawnRate" id="cargoSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
+                <div>Patrol Spawn Rate: <textarea class="textLock" name="patrolSpawnRate" id="patrolSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
+                <div>Pirate Spawn Rate: <textarea class="textLock" name="pirateSpawnRate" id="pirateSpawnRate" cols="10" rows="1" style="resize:none"></textarea></div>
+                <br>
+                <div>Row: <textarea readonly name="rowNumber" id="cellRow" cols="5" rows="1" style="resize:none;background-color: gray;"></textarea></div>
+                <div>Column: <textarea readonly name="columnNumber" id="cellColumn" cols="5" rows="1" style="resize:none; background-color: gray;"></textarea></div>
+                <div>Percentage chance a boat will spawn in this cell: <textarea class="textLock" name="cellSpawnChance" id="cellSpawnText" cols="10" rows="1" style="resize:none"></textarea></div><br>
+                <select id="cornerBoatSelect" onchange="DNSelection()">
+                    <option>Cargo</option>
+                </select>
+                <div><button class="buttonLock" onclick="simManager.saveSettings()">Save Settings</button></div>
+            </div>
+        </div>
+        <div id="GraphicsSettings">
+            Graphics Settings
+            <div style="margin-top: 0.1in;">Scale To Show Grid: <textarea id="scaleToShowGrid" cols="10" rows="1" style="resize: none"></textarea></div>
+            <div>Grid Line Scale Factor: <textarea id="gridLineScaleFactor" cols="10" rows="1" style="resize: none"></textarea></div>
+            <div>Relative Image Size: <textarea id="relImageSize" cols="10" rows="1" style="resize: none"></textarea></div>
+            <div>Big Grid Line Width: <textarea id="bigGridLineThick" cols="10" rows="1" style="resize: none"></textarea></div>
+            <div>Small Grid Line Width: <textarea id="smallGridLineThick" cols="10" rows="1" style="resize: none"></textarea></div>
+            <div>Sim Map Percentage: <textarea id="simMapPercentage" cols="10" rows="1" style="resize: none"></textarea></div>
+            <div>Cell Overlay Opacity: <textarea id="cellOverlayOpacity" cols="10" rows="1" style="resize: none"></textarea></div>
+            <div>Use Low Res Images: <input id="lowResImages" type="checkbox"></div>
+            <div>Show Map Legend: <input id="showMapLegend" type="checkbox"></div>
+            <div style="margin-top: 0.2in;"><button onclick="SaveGraphicsSettings()">Apply Settings</button></div>
+        </div>
     </div>
-
-
 
     <!-- All js scripts go here at the bottom of the <body> block-->
     <script src="/src/js/libraries/p5/lib/p5.js"></script>
