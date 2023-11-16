@@ -145,35 +145,6 @@ class SimManager {
         document.getElementById("timeStep").innerText = tempFrame.frameTime / 5;
     }
 
-    /* updateTime() {
-        if(simManager.simulation.simOver){
-            return;
-        } 
-        
-        var timeToDate = temp - simManager.simulation.simulationClock;
-        var timeToDate2 = temp - tempTime2;
-        let tempFrame = this.simulation.getCurrentFrame();
-        let tempTime = simManager.simulation.simulationClock.getMinutes();
-        let tempTime3 = tempTime2.getMinutes();
-        simManager.simulation.simulationClock.setMinutes(tempTime + 5);
-        tempTime2.setMinutes(tempTime3 - 5);
-        document.getElementById("timeStep").innerText = tempFrame.frameTime / 5;
-        var secondsInADay = 60 * 60 * 1000 * 24,
-        secondsInAHour = 60 * 60 * 1000;
-        var days2 = Math.floor(timeToDate2 / (secondsInADay) * 1);
-        var hours2 = Math.floor((timeToDate2 % (secondsInADay)) / (secondsInAHour) * 1);
-        var minutes2 = Math.floor(((timeToDate2 % (secondsInADay)) % (secondsInAHour)) / (60 * 1000) * 1);
-        var seconds2 = Math.floor((((timeToDate2 % (secondsInADay)) % (secondsInAHour)) % (60 * 1000)) / 1000 * 1);
-        document.getElementById("timeElapsedValue").innerHTML = days2 + "<small>d</small> " + hours2 + "<small>h</small> " + minutes2 + "<small>m</small> " + seconds2 + "<small>s</small> ";
-        //document.getElementById("timeElapsedValue").innerText = simManager.simulation.simulationClock.toLocaleTimeString('en-US');
-        //document.getElementById("timeLeftValue").innerText = simManager.simulation.simulationClock.toLocaleTimeString('en-US');
-        //temp = simManager.simulation.simulationClock;
-        var days = Math.floor(timeToDate / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((timeToDate % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((timeToDate % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((timeToDate % (1000 * 60)) / 1000);
-        document.getElementById("timeLeftValue").innerHTML = days + "<small>d</small> " + hours + "<small>h</small> " + minutes + "<small>m</small> " + seconds + "<small>s</small> ";
-    } */
     updateTimeElapsed()
     {
         let currentTimeSeconds = this.simulation.currentSimTime * 60;
