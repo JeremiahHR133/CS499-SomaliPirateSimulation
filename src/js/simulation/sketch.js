@@ -102,11 +102,11 @@ function draw() {
     if (showLegend)
         image(legendImage, 0, canvasHeight - 24);
 
+    drawModifiedCells();
+
     drawGridLines();
 
     drawBoatSprites();
-
-    drawModifiedCells();
 }
 
 // Because customization is cool
