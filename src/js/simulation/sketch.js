@@ -28,6 +28,7 @@ let relImageSize = 80;         // The size of the image relative to a 1080p scre
 let relGridLineThick = 1.0;    // The thinkness of the thick grid line on a 1080p screen
 let relGridLineThin = 0.4;     // The thinkness of the thin  grid line on a 1080p screen
 let simMapPercentage = 0.9;    // The percentage of the map to be used for the grid drawing
+let cellOverlayOpacity = 0.5;  // The opacity to draw overlay on modified cells
 let lowResImages = false;      // Use high or low resolution images
 let showLegend = false;        // Show the map legend
 
@@ -78,6 +79,7 @@ function setup() {
     simManager = new SimManager();
 
     simManager.updateSettingsUI();
+    UpdageGraphicsSettingsUI();
 }
 
 function draw() {
@@ -229,7 +231,7 @@ function drawModifiedCells()
 
 function drawModifiedList(list, color, xCoord, yCoord)
 {
-    fill(color[0], color[1], color[2], 127);
+    fill(color[0], color[1], color[2], 255 * cellOverlayOpacity);
     strokeWeight(0);
     rectMode(CORNERS);
     if (list.length == 400)
@@ -606,4 +608,42 @@ function EnableNightSettings(enable)
     {
         nightOption.setAttribute("disabled", "disabled");
     }
+}
+
+function SaveGraphicsSettings()
+{
+    let stsg = document.getElementById("scaleToShowGrid").value;
+    let glsf = document.getElementById("gridLineScaleFactor").value;
+    let ris = document.getElementById("relImageSize").value;
+    let bglt = document.getElementById("bigGridLineThick").value;
+    let sglt = document.getElementById("smallGridLineThick").value;
+    let smp = document.getElementById("simMapPercentage").value;
+    let coo = document.getElementById("cellOverlayOpacity").value;
+    let lri = document.getElementById("lowResImages").checked;
+    let sml = document.getElementById("showMapLegend").checked;
+
+    scaleToShowGrid = simManager.capNumber(simManager.safeToNumber(stsg, scaleToShowGrid), 1, 10);
+    gridLineScaleFactor = simManager.capNumber(simManager.safeToNumber(glsf, gridLineScaleFactor), 0, 1);
+    relImageSize = simManager.capNumber(simManager.safeToNumber(ris, relImageSize), 20, 140);
+    relGridLineThick = simManager.capNumber(simManager.safeToNumber(bglt, relGridLineThick), 0.5, 1.5);
+    relGridLineThin = simManager.capNumber(simManager.safeToNumber(sglt, relGridLineThin), 0.1, 0.5);
+    simMapPercentage = simManager.capNumber(simManager.safeToNumber(smp, simMapPercentage), 0.1, 1);
+    cellOverlayOpacity = simManager.capNumber(simManager.safeToNumber(coo, cellOverlayOpacity), 0, 1);
+    lowResImages = Boolean(lri);
+    showLegend = Boolean(sml);
+
+    UpdageGraphicsSettingsUI();
+}
+
+function UpdageGraphicsSettingsUI()
+{
+    document.getElementById("scaleToShowGrid").value = scaleToShowGrid;
+    document.getElementById("gridLineScaleFactor").value = gridLineScaleFactor;
+    document.getElementById("relImageSize").value = relImageSize;
+    document.getElementById("bigGridLineThick").value = relGridLineThick;
+    document.getElementById("smallGridLineThick").value = relGridLineThin;
+    document.getElementById("simMapPercentage").value = simMapPercentage;
+    document.getElementById("cellOverlayOpacity").value = cellOverlayOpacity;
+    document.getElementById("lowResImages").checked = lowResImages;
+    document.getElementById("showMapLegend").checked = showLegend;
 }
