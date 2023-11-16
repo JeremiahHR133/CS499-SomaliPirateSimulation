@@ -14,9 +14,6 @@ class SimManager {
         this.lastProbIndexCol = 0;
 
         this.simulation = new Simulation();
-        this.endTime = new Date('August 19, 1975 13:00:00 GMT+00:00');
-        this.startTime = new Date('August 19, 1975 13:00:00 GMT+00:00');
-        
     }
 
     importFromJSON(obj) {
@@ -50,8 +47,6 @@ class SimManager {
         
         let currentTime = performance.now();
         if (currentTime - this.prevTime >= this.frametime || this.singleStepMode) {
-            this.updateTimeElapsed()
-            this.updateTimeLeft()
             if (this.simReplayMode) {
                 this.simulation.nextReplayFrame(this.replayBackwards);
             }
@@ -61,7 +56,9 @@ class SimManager {
             //console.log(this.simulation.toString("   "));
             this.prevTime = performance.now();
             this.updateCounts();
-            
+            this.updateTimeElapsed();
+            this.updateTimeLeft();
+            this.updateReplayMode();
         }
 
         if (this.singleStepMode) {
@@ -147,7 +144,7 @@ class SimManager {
 
     updateTimeElapsed()
     {
-        let currentTimeSeconds = this.simulation.currentSimTime * 60;
+        let currentTimeSeconds = this.simulation.getCurrentFrame().frameTime * 60;
         let days = Math.floor(currentTimeSeconds / (3600 * 24));
         let hours = Math.floor((currentTimeSeconds % (3600 * 24)) / 3600);
         let minutes = Math.floor((currentTimeSeconds % 3600) / 60);
@@ -159,7 +156,7 @@ class SimManager {
 
     updateTimeLeft()
     {
-        let currentTimeSeconds = (this.simulation.initialConditions.simRunTime * 60) - (this.simulation.currentSimTime * 60);
+        let currentTimeSeconds = (this.simulation.initialConditions.simRunTime * 60) - (this.simulation.getCurrentFrame().frameTime * 60);
         let days = Math.floor(currentTimeSeconds / (3600 * 24));
         let hours = Math.floor((currentTimeSeconds % (3600 * 24)) / 3600);
         let minutes = Math.floor((currentTimeSeconds % 3600) / 60);
@@ -168,6 +165,22 @@ class SimManager {
             return;
         }
     } 
+
+    updateReplayMode()
+    {
+        if (this.simReplayMode)
+        {
+            console.log(this.replayBackwards);
+            if (this.replayBackwards)
+            {
+                document.getElementById("simReplayMode").innerText = " Reverse";
+            }
+            else
+            {
+                document.getElementById("simReplayMode").innerText = " Forwards";
+            }
+        }
+    }
 
     tryLockSettings()
     {
@@ -346,8 +359,10 @@ class SimManager {
             this.lastProbIndexRow, this.lastProbIndexCol,
             document.getElementById("cornerBoatSelect").value,
             isDay);
-            this.updateTimeElapsed()
-            this.updateTimeLeft()
+
+        this.updateTimeElapsed();
+        this.updateTimeLeft();
+        this.updateReplayMode();
     }
 
     getProbValueFromIndex(row, col, cornerSelector, isDay)
