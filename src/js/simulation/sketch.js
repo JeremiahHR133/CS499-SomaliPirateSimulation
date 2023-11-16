@@ -78,9 +78,6 @@ function setup() {
     simManager = new SimManager();
 
     simManager.updateSettingsUI();
-    simManager.setClock();
-    simManager.updateTime()
-    //simManager.updateTime()
 }
 
 function draw() {

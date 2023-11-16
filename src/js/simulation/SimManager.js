@@ -8,11 +8,15 @@ class SimManager {
         this.simReplayMode = false;
         this.replayBackwards = false;
         this.lockSettings = false;
+        
 
         this.lastProbIndexRow = 0;
         this.lastProbIndexCol = 0;
 
         this.simulation = new Simulation();
+        this.endTime = new Date('August 19, 1975 13:00:00 GMT+00:00');
+        this.startTime = new Date('August 19, 1975 13:00:00 GMT+00:00');
+        
     }
 
     importFromJSON(obj) {
@@ -46,7 +50,8 @@ class SimManager {
         
         let currentTime = performance.now();
         if (currentTime - this.prevTime >= this.frametime || this.singleStepMode) {
-            this.updateTime();
+            this.updateTimeElapsed()
+            this.updateTimeLeft()
             if (this.simReplayMode) {
                 this.simulation.nextReplayFrame(this.replayBackwards);
             }
@@ -137,9 +142,10 @@ class SimManager {
         document.getElementById("capturesRescued").innerText   = tempFrame.simStatsData.capturesRescued;
         document.getElementById("evadesNotCaptured").innerText = tempFrame.simStatsData.evadesNotCaptured;
         document.getElementById("evadesCaptured").innerText    = tempFrame.simStatsData.evadesCaptured;
+        document.getElementById("timeStep").innerText = tempFrame.frameTime / 5;
     }
 
-    updateTime() {
+    /* updateTime() {
         if(simManager.simulation.simOver){
             return;
         } 
@@ -167,25 +173,31 @@ class SimManager {
         var minutes = Math.floor((timeToDate % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((timeToDate % (1000 * 60)) / 1000);
         document.getElementById("timeLeftValue").innerHTML = days + "<small>d</small> " + hours + "<small>h</small> " + minutes + "<small>m</small> " + seconds + "<small>s</small> ";
+    } */
+    updateTimeElapsed()
+    {
+        let currentTimeSeconds = this.simulation.currentSimTime * 60;
+        let days = Math.floor(currentTimeSeconds / (3600 * 24));
+        let hours = Math.floor((currentTimeSeconds % (3600 * 24)) / 3600);
+        let minutes = Math.floor((currentTimeSeconds % 3600) / 60);
+        document.getElementById("timeElapsedValue").innerHTML = days + "<small>d</small> " + hours + "<small>h</small> " + minutes + "<small>m</small> ";
+        if(simManager.simulation.simOver){
+            return;
+        }
     }
 
-    setClock() {
-        document.getElementById("timeElapsedValue").innerHTML = 0 + "<small>d</small> " + 0 + "<small>h</small> " + 0 + "<small>m</small> " + 0 + "<small>s</small> ";
-        //document.getElementById("timeElapsedValue").innerText = simManager.simulation.simulationClock.toLocaleTimeString('en-US');
-        globalThis.temp = new Date(simManager.simulation.simulationClock);
-        
-        //temp = simManager.simulation.simulationClock;
-        let tempHours = temp.getHours();
-        tempHours = tempHours + (simManager.simulation.initialConditions.simRunTime / 60)
-        temp.setHours(tempHours);
-        var timeToDate = temp - simManager.simulation.simulationClock;
-        var days = Math.floor(timeToDate / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((timeToDate % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((timeToDate % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((timeToDate % (1000 * 60)) / 1000);
-        globalThis.tempTime2 = new Date(temp);
-        document.getElementById("timeLeftValue").innerHTML = days + "<small>d</small> " + hours + "<small>h</small> " + minutes + "<small>m</small> " + seconds + "<small>s</small> ";
-    }
+    updateTimeLeft()
+    {
+        let currentTimeSeconds = (this.simulation.initialConditions.simRunTime * 60) - (this.simulation.currentSimTime * 60);
+        let days = Math.floor(currentTimeSeconds / (3600 * 24));
+        let hours = Math.floor((currentTimeSeconds % (3600 * 24)) / 3600);
+        let minutes = Math.floor((currentTimeSeconds % 3600) / 60);
+        document.getElementById("timeLeftValue").innerHTML = days + "<small>d</small> " + hours + "<small>h</small> " + minutes + "<small>m</small> ";
+        if(simManager.simulation.simOver){
+            return;
+        }
+    } 
+
     tryLockSettings()
     {
         if (!this.lockSettings)
@@ -363,7 +375,8 @@ class SimManager {
             this.lastProbIndexRow, this.lastProbIndexCol,
             document.getElementById("cornerBoatSelect").value,
             isDay);
-        this.setClock()
+            this.updateTimeElapsed()
+            this.updateTimeLeft()
     }
 
     getProbValueFromIndex(row, col, cornerSelector, isDay)
