@@ -78,7 +78,8 @@ function setup() {
 
     simManager = new SimManager();
 
-    simManager.updateSettingsUI();
+    // Update settings UI with day settings as default
+    simManager.updateSettingsUI(true);
     UpdageGraphicsSettingsUI();
 }
 
@@ -497,7 +498,8 @@ function importAndStart() {
 
                         resolve("File successfully imported!");
 
-                        simManager.updateSettingsUI();
+                        // Always going to update the settings as day
+                        simManager.updateSettingsUI(true);
                     }
                 } else {
                     reject("Invalid file type\nAcceptable File Type: .json");

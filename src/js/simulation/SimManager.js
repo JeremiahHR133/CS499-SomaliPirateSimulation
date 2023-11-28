@@ -170,7 +170,6 @@ class SimManager {
     {
         if (this.simReplayMode)
         {
-            console.log(this.replayBackwards);
             if (this.replayBackwards)
             {
                 document.getElementById("simReplayMode").innerText = " Reverse";
