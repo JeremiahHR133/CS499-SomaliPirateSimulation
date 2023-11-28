@@ -77,10 +77,6 @@ class InitSimData {
         this.simDimensions = obj.simDimensions; // 100 rows by 400 columns 
         this.considerDayNight = obj.considerDayNight; // Specifies if individual day / night settings should be used
         this.totalInputCellProb = obj.totalInputCellProb;
-        // Default probabilities for spawn
-        this.dayCargoSpawn = obj.cargoSpawn;
-        this.dayPatrolSpawn = obj.patrolSpawn;
-        this.dayPirateSpawn = obj.pirateSpawn;
 
         // Default probabilities for day spawn
         this.dayCargoSpawn  = obj.dayCargoSpawn;
@@ -88,9 +84,9 @@ class InitSimData {
         this.dayPirateSpawn = obj.dayPirateSpawn;
 
         // Default probabilities for night spawn
-        this.dayCargoSpawn  = obj.nightCargoSpawn;
-        this.dayPatrolSpawn = obj.nightPatrolSpawn;
-        this.dayPirateSpawn = obj.nightPirateSpawn;
+        this.nightCargoSpawn  = obj.nightCargoSpawn;
+        this.nightPatrolSpawn = obj.nightPatrolSpawn;
+        this.nightPirateSpawn = obj.nightPirateSpawn;
 
         // Day probs
         for (let i = 0; i < this.dayCargoProbs.length; i++) {
